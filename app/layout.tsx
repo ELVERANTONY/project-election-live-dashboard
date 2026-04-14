@@ -28,9 +28,6 @@ export const metadata: Metadata = {
   ),
   title: "¿Nieto pasa a Aliaga? | Primera Vuelta 2026",
   description: "Cuántos votos le faltan a Jorge Nieto para superar a López Aliaga y llegar al segundo lugar. Actualización en tiempo real — ONPE.",
-  icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>",
-  },
   openGraph: {
     title: "¿Nieto pasa a Aliaga? | Primera Vuelta 2026",
     description: "Cuántos votos le faltan a Jorge Nieto para superar a López Aliaga y llegar al segundo lugar. Actualización en tiempo real — ONPE.",
@@ -54,6 +51,7 @@ export default function RootLayout({
       className={`dark ${spaceGrotesk.variable} ${workSans.variable} ${inter.variable}`}
     >
       <head>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌞</text></svg>" />
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           rel="stylesheet"
