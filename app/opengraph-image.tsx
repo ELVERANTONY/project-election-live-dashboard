@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { fetchElectoralData } from "@/lib/electoral";
 
-export const alt = "The Digital Ledger | Seguimiento Electoral en Vivo";
+export const alt = "¿Nieto pasa a Aliaga? | Primera Vuelta 2026";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -44,7 +44,7 @@ export default async function Image() {
             fontFamily: "sans-serif",
           }}
         >
-          The Digital Ledger · Electoral Tracker
+          ¿Nieto pasa a Aliaga? · Primera Vuelta 2026
         </div>
       ),
       { ...size }
@@ -85,10 +85,10 @@ export default async function Image() {
           />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: 14, color: MUTED, letterSpacing: 3, textTransform: "uppercase" }}>
-              The Digital Ledger
+              Primera Vuelta 2026
             </span>
             <span style={{ fontSize: 22, fontWeight: 700, color: TEXT, marginTop: 2 }}>
-              Seguimiento Electoral · Segunda Vuelta 2026
+              ¿Cuántos votos le faltan a Nieto para pasar a Aliaga?
             </span>
           </div>
           <div style={{ flex: 1 }} />
