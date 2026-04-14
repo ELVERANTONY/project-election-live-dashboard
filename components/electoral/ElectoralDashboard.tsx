@@ -8,6 +8,7 @@ import { VoteProgressBar } from "./VoteProgressBar";
 import { CandidateCard } from "./CandidateCard";
 import { MetricsRow } from "./MetricsRow";
 import { FlashAlert } from "./FlashAlert";
+import { DepartamentosTable } from "./DepartamentosTable";
 
 export function ElectoralDashboard() {
   const { data, loading } = useElectoralData();
@@ -51,6 +52,10 @@ export function ElectoralDashboard() {
       </section>
 
       <MetricsRow turnout={data.turnout} projectedRemaining={data.projectedRemaining} />
+
+      <section className="mb-12 lg:mb-16">
+        <DepartamentosTable />
+      </section>
 
       <FlashAlert gap23={data.gap23} nietoLeading={data.nietoLeading} />
     </>

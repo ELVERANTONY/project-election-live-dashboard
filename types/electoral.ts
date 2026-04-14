@@ -17,6 +17,22 @@ export interface KeikoData {
   officialPct: number;
 }
 
+export interface DepartmentRow {
+  ubigeo: string;
+  name: string;
+  aliagaPct: number;
+  nietoPct: number;
+  sanchezPct: number;
+  aliagaVotes: number;
+  nietoVotes: number;
+  sanchezVotes: number;
+}
+
+export interface DepartamentosData {
+  departments: DepartmentRow[];
+  lastSync: string;
+}
+
 export interface ElectoralData {
   keiko: KeikoData;
   contenders: [Candidate, Candidate, Candidate]; // [aliaga, nieto, sanchez]
