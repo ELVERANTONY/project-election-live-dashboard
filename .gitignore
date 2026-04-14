@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# markdown (except README)
+*.md
+!README.md
+
+# local tooling
+.playwright-mcp/
+.claude/
+stitch_nieto_votos_en_vivo/
+
+# design files
+*.pen
