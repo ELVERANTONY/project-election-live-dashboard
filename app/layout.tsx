@@ -21,8 +21,28 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "The Digital Ledger | Electoral Tracker",
-  description: "Real-time electoral vote tracking",
+  metadataBase: new URL(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000"
+  ),
+  title: "¿Nieto pasa a Aliaga? | Primera Vuelta 2026",
+  description: "Cuántos votos le faltan a Jorge Nieto para superar a López Aliaga y llegar al segundo lugar. Actualización en tiempo real — ONPE.",
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>",
+  },
+  openGraph: {
+    title: "¿Nieto pasa a Aliaga? | Primera Vuelta 2026",
+    description: "Cuántos votos le faltan a Jorge Nieto para superar a López Aliaga y llegar al segundo lugar. Actualización en tiempo real — ONPE.",
+    siteName: "¿Nieto pasa a Aliaga?",
+    locale: "es_PE",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "¿Nieto pasa a Aliaga? | Primera Vuelta 2026",
+    description: "Cuántos votos le faltan a Jorge Nieto para superar a López Aliaga y llegar al segundo lugar. Actualización en tiempo real — ONPE.",
+  },
 };
 
 export default function RootLayout({
