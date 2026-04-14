@@ -4,11 +4,30 @@ import { fetchElectoralData } from "@/lib/electoral";
 export const alt = "¿Nieto pasa a Aliaga? | Primera Vuelta 2026";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-
 export const dynamic = "force-dynamic";
 
 function fmt(n: number) {
   return n.toLocaleString("es-PE");
+}
+
+const ONPE_HEADERS = {
+  Referer: "https://resultadoelectoral.onpe.gob.pe/",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+};
+
+async function fetchPhotoDataUrl(dni: string): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://resultadoelectoral.onpe.gob.pe/assets/img-reales/candidatos/${dni}.jpg`,
+      { headers: ONPE_HEADERS, cache: "no-store" }
+    );
+    if (!res.ok) return null;
+    const buf = await res.arrayBuffer();
+    const b64 = Buffer.from(buf).toString("base64");
+    return `data:image/jpeg;base64,${b64}`;
+  } catch {
+    return null;
+  }
 }
 
 const BG      = "#0e141a";
@@ -35,23 +54,13 @@ export default async function Image() {
       (
         <div
           style={{
-            width: "100%",
-            height: "100%",
-            background: BG,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            gap: 12,
-            fontFamily: "sans-serif",
+            width: "100%", height: "100%", background: BG,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexDirection: "column", gap: 12, fontFamily: "sans-serif",
           }}
         >
-          <span style={{ fontSize: 48, color: TEXT, fontWeight: 700 }}>
-            ¿Nieto pasa a Aliaga?
-          </span>
-          <span style={{ fontSize: 20, color: MUTED }}>
-            Primera Vuelta 2026 · En vivo
-          </span>
+          <span style={{ fontSize: 48, color: TEXT, fontWeight: 700 }}>¿Nieto pasa a Aliaga?</span>
+          <span style={{ fontSize: 20, color: MUTED }}>Primera Vuelta 2026 · En vivo</span>
         </div>
       ),
       { ...size }
@@ -60,228 +69,151 @@ export default async function Image() {
 
   const [aliaga, nieto, sanchez] = data.contenders;
 
+  // Extract DNIs from imageUrl (/api/candidato-img/{dni})
+  const aliagaDni  = aliaga.imageUrl.split("/").pop() ?? "";
+  const nietoDni   = nieto.imageUrl.split("/").pop() ?? "";
+  const sanchezDni = sanchez.imageUrl.split("/").pop() ?? "";
+
+  const [aliagaImg, nietoImg, sanchezImg] = await Promise.all([
+    fetchPhotoDataUrl(aliagaDni),
+    fetchPhotoDataUrl(nietoDni),
+    fetchPhotoDataUrl(sanchezDni),
+  ]);
+
+  const BAR_W    = 1104;
   const barTotal = aliaga.votes + nieto.votes + sanchez.votes;
-  const BAR_W   = 1100;
   const aliagaW  = Math.round((aliaga.votes  / barTotal) * BAR_W);
   const nietoW   = Math.round((nieto.votes   / barTotal) * BAR_W);
   const sanchezW = BAR_W - aliagaW - nietoW;
 
-  const actas_pct = data.actasProcessed > 0
-    ? ((data.actasProcessed / (data.actasProcessed + (data.actasProcessed * (1 - data.turnout / 100)))) * 100).toFixed(1)
-    : "—";
-
   const gapColor  = data.nietoLeading ? GREEN : TEXT;
   const gapPrefix = data.nietoLeading ? "−" : "+";
-  const gapLabel  = data.nietoLeading
-    ? "Nieto supera a Aliaga por"
-    : "Le faltan a Nieto";
+  const gapLabel  = data.nietoLeading ? "Nieto supera a Aliaga por" : "Le faltan a Nieto";
   const gapSub    = data.nietoLeading
-    ? "votos · Nieto pasaría a segunda vuelta"
+    ? "votos · pasaría a segunda vuelta"
     : "votos para superar a López Aliaga";
+
+  const candidates = [
+    { c: aliaga,  img: aliagaImg,  rankLabel: "2DO LUGAR",            accent: GRAY,  cardBg: CARD,    highlight: false },
+    { c: nieto,   img: nietoImg,   rankLabel: "3ER LUGAR — EN DISPUTA", accent: BLUE,  cardBg: BLUE_DK, highlight: true  },
+    { c: sanchez, img: sanchezImg, rankLabel: "4TO LUGAR",             accent: CORAL, cardBg: CARD,    highlight: false },
+  ];
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          background: BG,
-          display: "flex",
-          flexDirection: "column",
-          fontFamily: "sans-serif",
-        }}
-      >
+      <div style={{ width: "100%", height: "100%", background: BG, display: "flex", flexDirection: "column", fontFamily: "sans-serif" }}>
+
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "0 48px",
-            height: 64,
-            borderBottom: `1px solid ${BORDER}`,
-          }}
-        >
-          <span style={{ fontSize: 28, marginRight: 12 }}>🌞</span>
-          <span style={{ fontSize: 22, fontWeight: 700, color: TEXT }}>
-            ¿Nieto pasa a Aliaga?
-          </span>
+        <div style={{ display: "flex", alignItems: "center", padding: "0 48px", height: 52, borderBottom: `1px solid ${BORDER}` }}>
+          <span style={{ fontSize: 24, marginRight: 10 }}>🌞</span>
+          <span style={{ fontSize: 20, fontWeight: 700, color: TEXT }}>¿Nieto pasa a Aliaga?</span>
           <div style={{ flex: 1 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: 999,
-                background: GREEN,
-              }}
-            />
-            <span style={{ fontSize: 13, color: MUTED, letterSpacing: 2, textTransform: "uppercase" }}>
+            <div style={{ width: 7, height: 7, borderRadius: 999, background: GREEN }} />
+            <span style={{ fontSize: 12, color: MUTED, letterSpacing: 2, textTransform: "uppercase" }}>
               EN VIVO · {data.lastSync}
             </span>
           </div>
         </div>
 
+        {/* Keiko banner */}
+        <div style={{ display: "flex", alignItems: "center", padding: "0 48px", height: 46, background: CARD, borderBottom: `1px solid ${BORDER}` }}>
+          <div style={{ width: 6, height: 6, borderRadius: 999, background: BLUE, marginRight: 10 }} />
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ fontSize: 9, color: MUTED, textTransform: "uppercase", letterSpacing: 2 }}>1ER LUGAR — CLASIFICADA A SEGUNDA VUELTA</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: TEXT }}>KEIKO FUJIMORI</span>
+          </div>
+          <div style={{ flex: 1 }} />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+            <span style={{ fontSize: 15, fontWeight: 700, color: TEXT }}>{fmt(data.keiko.votes)} votos</span>
+            <span style={{ fontSize: 10, color: MUTED }}>{data.keiko.officialPct.toFixed(2)}% válidos</span>
+          </div>
+        </div>
+
         {/* GapHero */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            flex: 1,
-            padding: "24px 48px 8px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              background: "#631200",
-              borderRadius: 4,
-              padding: "4px 14px",
-              marginBottom: 16,
-            }}
-          >
-            <span style={{ fontSize: 12, color: CORAL, letterSpacing: 2, textTransform: "uppercase" }}>
-              Actas contabilizadas: {fmt(data.actasProcessed)}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "12px 48px 8px", height: 160 }}>
+          <div style={{ display: "flex", alignItems: "center", background: "#631200", borderRadius: 3, padding: "3px 12px", marginBottom: 10 }}>
+            <span style={{ fontSize: 10, color: CORAL, letterSpacing: 2, textTransform: "uppercase" }}>
+              Actas contabilizadas: {data.actasProcessed.toFixed(3)}%
             </span>
           </div>
-
-          <span style={{ fontSize: 16, color: MUTED, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>
-            {gapLabel}
-          </span>
-
-          <span style={{ fontSize: 88, fontWeight: 700, color: gapColor, lineHeight: 1 }}>
+          <span style={{ fontSize: 13, color: MUTED, letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>{gapLabel}</span>
+          <span style={{ fontSize: 76, fontWeight: 700, color: gapColor, lineHeight: 1 }}>
             {gapPrefix}{fmt(data.gap23)}
           </span>
-
-          <span style={{ fontSize: 18, color: MUTED, marginTop: 12 }}>
-            {gapSub}
-          </span>
-
-          <span style={{ fontSize: 14, color: CORAL, marginTop: 10 }}>
+          <span style={{ fontSize: 14, color: MUTED, marginTop: 8 }}>{gapSub}</span>
+          <span style={{ fontSize: 12, color: CORAL, marginTop: 6 }}>
             Nieto le lleva +{fmt(data.gap34)} votos a Sánchez
           </span>
         </div>
 
-        {/* Candidate cards */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            padding: "0 48px",
-            gap: 12,
-            marginBottom: 16,
-          }}
-        >
-          {/* Aliaga */}
-          <div
-            style={{
-              flex: 1,
-              background: CARD,
-              border: `1px solid ${BORDER}`,
-              borderLeft: `4px solid ${GRAY}`,
-              borderRadius: 4,
-              padding: "12px 16px",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <span style={{ fontSize: 10, color: MUTED, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>
-              2do lugar
-            </span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: GRAY, textTransform: "uppercase", marginBottom: 4 }}>
-              {aliaga.name}
-            </span>
-            <span style={{ fontSize: 32, fontWeight: 700, color: GRAY }}>{aliaga.officialPct.toFixed(2)}%</span>
-            <span style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>{fmt(aliaga.votes)} votos</span>
-          </div>
-
-          {/* Nieto — highlighted */}
-          <div
-            style={{
-              flex: 1,
-              background: BLUE_DK,
-              border: `1px solid ${BLUE}`,
-              borderLeft: `4px solid ${BLUE}`,
-              borderRadius: 4,
-              padding: "12px 16px",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <span style={{ fontSize: 10, color: BLUE, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>
-              3er lugar — en disputa
-            </span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: BLUE, textTransform: "uppercase", marginBottom: 4 }}>
-              {nieto.name}
-            </span>
-            <span style={{ fontSize: 32, fontWeight: 700, color: BLUE }}>{nieto.officialPct.toFixed(2)}%</span>
-            <span style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>{fmt(nieto.votes)} votos</span>
-          </div>
-
-          {/* Sánchez */}
-          <div
-            style={{
-              flex: 1,
-              background: CARD,
-              border: `1px solid ${BORDER}`,
-              borderLeft: `4px solid ${CORAL}`,
-              borderRadius: 4,
-              padding: "12px 16px",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <span style={{ fontSize: 10, color: MUTED, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>
-              4to lugar
-            </span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: CORAL, textTransform: "uppercase", marginBottom: 4 }}>
-              {sanchez.name}
-            </span>
-            <span style={{ fontSize: 32, fontWeight: 700, color: CORAL }}>{sanchez.officialPct.toFixed(2)}%</span>
-            <span style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>{fmt(sanchez.votes)} votos</span>
-          </div>
-        </div>
-
         {/* Vote bar */}
-        <div style={{ display: "flex", flexDirection: "column", padding: "0 48px", marginBottom: 16 }}>
-          <div style={{ display: "flex", flexDirection: "row", height: 14, overflow: "hidden" }}>
-            <div style={{ width: aliagaW,  height: 14, background: GRAY }} />
-            <div style={{ width: 2,        height: 14, background: BG }} />
-            <div style={{ width: nietoW,   height: 14, background: BLUE }} />
-            <div style={{ width: 2,        height: 14, background: BG }} />
-            <div style={{ width: sanchezW, height: 14, background: CORAL }} />
+        <div style={{ display: "flex", flexDirection: "column", padding: "0 48px", marginBottom: 6 }}>
+          <div style={{ display: "flex", flexDirection: "row", height: 12, overflow: "hidden" }}>
+            <div style={{ width: aliagaW,  height: 12, background: GRAY  }} />
+            <div style={{ width: 2,        height: 12, background: BG    }} />
+            <div style={{ width: nietoW,   height: 12, background: BLUE  }} />
+            <div style={{ width: 2,        height: 12, background: BG    }} />
+            <div style={{ width: sanchezW, height: 12, background: CORAL }} />
           </div>
-          <div style={{ display: "flex", flexDirection: "row", marginTop: 6 }}>
-            <span style={{ fontSize: 11, color: GRAY, width: aliagaW }}>López Aliaga</span>
-            <span style={{ fontSize: 11, color: BLUE, width: nietoW, textAlign: "center" }}>Nieto</span>
-            <span style={{ fontSize: 11, color: CORAL, flex: 1, textAlign: "right" }}>Sánchez</span>
+          <div style={{ display: "flex", flexDirection: "row", marginTop: 5 }}>
+            <span style={{ fontSize: 11, color: GRAY,  width: aliagaW  }}>López Aliaga {aliaga.officialPct.toFixed(2)}%</span>
+            <span style={{ fontSize: 11, color: BLUE,  width: nietoW,   textAlign: "center" }}>Nieto {nieto.officialPct.toFixed(2)}%</span>
+            <span style={{ fontSize: 11, color: CORAL, flex: 1,         textAlign: "right"  }}>Sánchez {sanchez.officialPct.toFixed(2)}%</span>
           </div>
         </div>
 
-        {/* Footer */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            padding: "12px 48px",
-            borderTop: `1px solid ${BORDER}`,
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-            <span style={{ fontSize: 10, color: MUTED, textTransform: "uppercase", letterSpacing: 2 }}>Keiko Fujimori</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: TEXT }}>{data.keiko.officialPct.toFixed(2)}%</span>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", flex: 1, alignItems: "center" }}>
-            <span style={{ fontSize: 10, color: MUTED, textTransform: "uppercase", letterSpacing: 2 }}>Keiko · Votos</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: TEXT }}>{fmt(data.keiko.votes)}</span>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", flex: 1, alignItems: "flex-end" }}>
-            <span style={{ fontSize: 10, color: MUTED, textTransform: "uppercase", letterSpacing: 2 }}>Participación</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: TEXT }}>{data.turnout.toFixed(2)}%</span>
-          </div>
+        {/* Candidate cards */}
+        <div style={{ display: "flex", flexDirection: "row", padding: "0 48px", gap: 10, flex: 1 }}>
+          {candidates.map(({ c, img, rankLabel, accent, cardBg, highlight }) => (
+            <div
+              key={c.id}
+              style={{
+                flex: 1,
+                background: cardBg,
+                border: `1px solid ${highlight ? accent : BORDER}`,
+                borderLeft: `4px solid ${accent}`,
+                borderRadius: 3,
+                display: "flex",
+                flexDirection: "row",
+                overflow: "hidden",
+              }}
+            >
+              {/* Photo */}
+              <div style={{ width: 80, flexShrink: 0, background: "#0a0f14", overflow: "hidden", display: "flex" }}>
+                {img ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={img}
+                    alt={c.name}
+                    width={80}
+                    height={200}
+                    style={{
+                      width: 80,
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "top",
+                      filter: highlight ? "none" : "grayscale(100%)",
+                    }}
+                  />
+                ) : (
+                  <div style={{ width: 80, height: "100%", background: accent + "22" }} />
+                )}
+              </div>
+
+              {/* Data */}
+              <div style={{ flex: 1, padding: "10px 12px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <span style={{ fontSize: 9, color: accent, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 3 }}>{rankLabel}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: accent, textTransform: "uppercase", marginBottom: 6 }}>{c.name}</span>
+                <span style={{ fontSize: 28, fontWeight: 700, color: accent, lineHeight: 1, marginBottom: 4 }}>{c.officialPct.toFixed(2)}%</span>
+                <span style={{ fontSize: 10, color: MUTED }}>{fmt(c.votes)} votos</span>
+              </div>
+            </div>
+          ))}
         </div>
+
+        {/* Bottom padding */}
+        <div style={{ height: 14 }} />
       </div>
     ),
     { ...size }
