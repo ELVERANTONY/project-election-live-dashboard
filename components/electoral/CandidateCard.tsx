@@ -6,29 +6,39 @@ interface CandidateCardProps {
   index?: number;
 }
 
-const roleLabel: Record<Candidate["role"], string> = {
-  leader: "Va primero",
-  challenger: "Perseguidor",
-};
+const rankConfig = {
+  2: {
+    label: "2do lugar",
+    accent: "text-secondary",
+    border: "border-secondary",
+    bar: "bg-secondary",
+  },
+  3: {
+    label: "3er lugar",
+    accent: "text-primary",
+    border: "border-primary",
+    bar: "bg-gradient-to-r from-primary-container to-primary",
+  },
+  4: {
+    label: "4to lugar — en ascenso",
+    accent: "text-tertiary",
+    border: "border-tertiary",
+    bar: "bg-tertiary/80",
+  },
+} as const;
 
 export function CandidateCard({ candidate, index = 0 }: CandidateCardProps) {
-  const isNieto = candidate.id === "nieto";
-  const accent = isNieto ? "text-primary" : "text-secondary";
-  const border = isNieto ? "border-primary" : "border-secondary";
-  const bar = isNieto
-    ? "bg-gradient-to-r from-primary-container to-primary"
-    : "bg-secondary";
+  const cfg = rankConfig[candidate.rank];
 
   return (
     <div
-      className={`bg-surface-container-low flex flex-col border-l-4 ${border} rounded-sm group hover:bg-surface-container-high transition-colors duration-300 animate-fade-up overflow-hidden`}
+      className={`bg-surface-container-low flex flex-col border-l-4 ${cfg.border} rounded-sm group hover:bg-surface-container-high transition-colors duration-300 animate-fade-up overflow-hidden`}
       style={{ animationDelay: `${0.3 + index * 0.1}s` }}
       data-testid={`candidate-card-${candidate.id}`}
     >
-      {/* Body: image at native 150×150 + data */}
       <div className="flex flex-1">
         {/* Image — fill container, object-cover crops white edges */}
-        <div className="relative w-[150px] shrink-0 self-stretch overflow-hidden bg-surface-container-highest">
+        <div className="relative w-[120px] shrink-0 self-stretch overflow-hidden bg-surface-container-highest">
           <Image
             src={candidate.imageUrl}
             alt={candidate.imageAlt}
@@ -40,14 +50,12 @@ export function CandidateCard({ candidate, index = 0 }: CandidateCardProps) {
         </div>
 
         {/* Data */}
-        <div className="flex flex-col justify-between p-6 flex-1 min-w-0">
+        <div className="flex flex-col justify-between p-5 flex-1 min-w-0">
           <div>
-            <span
-              className={`font-label text-[10px] uppercase tracking-widest font-bold ${accent}/60`}
-            >
-              {roleLabel[candidate.role]}
+            <span className={`font-label text-[10px] uppercase tracking-widest font-bold ${cfg.accent}/70`}>
+              {cfg.label}
             </span>
-            <h2 className="font-headline text-2xl font-bold text-on-surface uppercase tracking-tighter mt-0.5 truncate">
+            <h2 className="font-headline text-xl font-bold text-on-surface uppercase tracking-tighter mt-0.5 leading-tight">
               {candidate.name}
             </h2>
             <span className="text-xs font-label text-on-surface-variant/50 mt-0.5 block truncate">
@@ -56,10 +64,10 @@ export function CandidateCard({ candidate, index = 0 }: CandidateCardProps) {
           </div>
 
           <div>
-            <p className={`text-4xl font-headline font-black odometer leading-none ${accent}`}>
-              {candidate.percentage}%
+            <p className={`text-3xl font-headline font-black odometer leading-none ${cfg.accent}`}>
+              {candidate.officialPct.toFixed(2)}%
             </p>
-            <p className={`text-[11px] font-label uppercase tracking-widest ${accent}/70 mt-1`}>
+            <p className={`text-[11px] font-label uppercase tracking-widest ${cfg.accent}/70 mt-1`}>
               {candidate.votes.toLocaleString("es-PE")} votos
             </p>
           </div>
@@ -69,8 +77,8 @@ export function CandidateCard({ candidate, index = 0 }: CandidateCardProps) {
       {/* Percentage bar */}
       <div className="h-1.5 w-full bg-surface-container-highest shrink-0">
         <div
-          className={`h-full transition-all duration-700 ${bar}`}
-          style={{ width: `${candidate.percentage}%` }}
+          className={`h-full transition-all duration-700 ${cfg.bar}`}
+          style={{ width: `${candidate.officialPct}%` }}
         />
       </div>
     </div>

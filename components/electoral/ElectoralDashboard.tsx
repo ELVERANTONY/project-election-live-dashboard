@@ -2,10 +2,10 @@
 
 import { useElectoralData } from "@/lib/useElectoralData";
 import { LiveStatus } from "./LiveStatus";
+import { KeikoBanner } from "./KeikoBanner";
 import { GapHero } from "./GapHero";
 import { VoteProgressBar } from "./VoteProgressBar";
 import { CandidateCard } from "./CandidateCard";
-import { DistrictTicker } from "./DistrictTicker";
 import { MetricsRow } from "./MetricsRow";
 import { FlashAlert } from "./FlashAlert";
 
@@ -25,49 +25,34 @@ export function ElectoralDashboard() {
     );
   }
 
-  const [nieto, aliaga] = data.candidates;
-  const { gap, actasProcessed, lastSync, districts, nietoLeading } = data;
-
-  const flashMsg = nietoLeading
-    ? `Nieto supera a López Aliaga por ${gap.toLocaleString("es-PE")} votos.`
-    : `Le faltan ${gap.toLocaleString("es-PE")} votos para superar al chancho.`;
+  const [aliaga, nieto, sanchez] = data.contenders;
 
   return (
     <>
-      <LiveStatus lastSync={lastSync} actasProcessed={actasProcessed} />
+      <LiveStatus lastSync={data.lastSync} actasProcessed={data.actasProcessed} />
+
+      <KeikoBanner keiko={data.keiko} />
 
       <GapHero
-        gap={gap}
-        actasProcessed={actasProcessed}
-        challengerName={nieto.name}
-        leaderName={aliaga.name}
-        nietoLeading={nietoLeading}
+        gap23={data.gap23}
+        gap34={data.gap34}
+        nietoLeading={data.nietoLeading}
+        actasProcessed={data.actasProcessed}
       />
 
-      <VoteProgressBar nieto={nieto} aliaga={aliaga} />
+      <VoteProgressBar aliaga={aliaga} nieto={nieto} sanchez={sanchez} />
 
       <section className="mb-12 lg:mb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <CandidateCard candidate={nieto} index={0} />
-          <CandidateCard candidate={aliaga} index={1} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <CandidateCard candidate={aliaga} index={0} />
+          <CandidateCard candidate={nieto} index={1} />
+          <CandidateCard candidate={sanchez} index={2} />
         </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="lg:col-span-2">
-          <MetricsRow
-            turnout={data.turnout}
-            projectedRemaining={data.projectedRemaining}
-          />
-        </div>
-        {districts.length > 0 && (
-          <div>
-            <DistrictTicker districts={districts} />
-          </div>
-        )}
-      </div>
+      <MetricsRow turnout={data.turnout} projectedRemaining={data.projectedRemaining} />
 
-      <FlashAlert message={flashMsg} />
+      <FlashAlert gap23={data.gap23} nietoLeading={data.nietoLeading} />
     </>
   );
 }

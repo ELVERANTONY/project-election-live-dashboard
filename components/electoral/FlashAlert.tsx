@@ -1,9 +1,13 @@
 interface FlashAlertProps {
-  message: string;
-  title?: string;
+  gap23: number;
+  nietoLeading: boolean;
 }
 
-export function FlashAlert({ message, title = "Flash Alert" }: FlashAlertProps) {
+export function FlashAlert({ gap23, nietoLeading }: FlashAlertProps) {
+  const message = nietoLeading
+    ? `Nieto supera a Aliaga por ${gap23.toLocaleString("es-PE")} votos y pasaría a segunda vuelta.`
+    : `Le faltan ${gap23.toLocaleString("es-PE")} votos a Nieto para pasar a la segunda vuelta.`;
+
   return (
     <div
       className="hidden lg:flex fixed bottom-8 right-8 z-[100] glass-panel p-6 rounded-sm border border-outline-variant/15 shadow-2xl items-center gap-4 max-w-sm animate-slide-in-right"
@@ -18,7 +22,7 @@ export function FlashAlert({ message, title = "Flash Alert" }: FlashAlertProps) 
       </div>
       <div>
         <h4 className="text-on-surface font-headline font-bold uppercase text-sm tracking-widest">
-          {title}
+          2da vuelta en juego
         </h4>
         <p className="text-xs text-on-surface-variant leading-relaxed mt-0.5">
           {message}

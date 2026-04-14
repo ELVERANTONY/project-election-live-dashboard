@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { Candidate } from "@/types/electoral";
 
 interface VoteProgressBarProps {
-  nieto: Candidate;
   aliaga: Candidate;
+  nieto: Candidate;
+  sanchez: Candidate;
 }
 
-export function VoteProgressBar({ nieto, aliaga }: VoteProgressBarProps) {
+export function VoteProgressBar({ aliaga, nieto, sanchez }: VoteProgressBarProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -16,38 +17,62 @@ export function VoteProgressBar({ nieto, aliaga }: VoteProgressBarProps) {
     return () => cancelAnimationFrame(id);
   }, []);
 
+  const segments = [
+    { candidate: aliaga, color: "bg-secondary",                              label: aliaga.name },
+    { candidate: nieto,  color: "bg-gradient-to-r from-primary-container to-primary", label: nieto.name },
+    { candidate: sanchez, color: "bg-tertiary/80",                           label: sanchez.name },
+  ];
+
   return (
     <section
-      className="mb-12 lg:mb-16 animate-fade-up"
+      className="mb-12 animate-fade-up"
       style={{ animationDelay: "0.2s" }}
       data-testid="vote-progress-bar"
     >
-      <div className="flex justify-between items-end mb-3">
-        <span className="font-label text-[10px] uppercase font-black text-primary">
-          {nieto.name}
-        </span>
-        <span className="font-label text-[10px] uppercase font-black text-secondary">
-          {aliaga.name}
-        </span>
+      {/* Labels above */}
+      <div className="flex mb-2">
+        {segments.map(({ candidate, label }, i) => (
+          <div
+            key={candidate.id}
+            className="font-label text-[10px] uppercase font-black truncate"
+            style={{ width: `${candidate.sharePct}%`, textAlign: i === 0 ? "left" : i === 1 ? "center" : "right" }}
+          >
+            <span className={i === 0 ? "text-secondary" : i === 1 ? "text-primary" : "text-tertiary"}>
+              {label}
+            </span>
+          </div>
+        ))}
       </div>
 
+      {/* Bar */}
       <div className="h-8 w-full bg-surface-container-highest rounded-sm flex overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-primary-container to-primary transition-all duration-1000 ease-out"
-          style={{ width: mounted ? `${nieto.percentage}%` : "0%" }}
-          data-testid="nieto-bar"
-        />
-        <div className="h-full w-[2px] bg-surface-dim z-10 shrink-0" />
-        <div
-          className="h-full bg-secondary transition-all duration-1000 ease-out"
-          style={{ width: mounted ? `${aliaga.percentage}%` : "0%" }}
-          data-testid="aliaga-bar"
-        />
+        {segments.map(({ candidate, color }, i) => (
+          <div
+            key={candidate.id}
+            className={`h-full transition-all duration-1000 ease-out ${color}`}
+            style={{ width: mounted ? `${candidate.sharePct}%` : "0%" }}
+            data-testid={`${candidate.id}-bar`}
+          >
+            {i < segments.length - 1 && (
+              <div className="h-full w-[2px] bg-surface-dim ml-auto" />
+            )}
+          </div>
+        ))}
       </div>
 
-      <div className="flex justify-between mt-2 font-headline text-lg tabular-nums odometer">
-        <span className="text-primary">{nieto.percentage}%</span>
-        <span className="text-secondary">{aliaga.percentage}%</span>
+      {/* Percentages below */}
+      <div className="flex mt-2">
+        {segments.map(({ candidate }, i) => (
+          <div
+            key={candidate.id}
+            className="font-headline text-base tabular-nums odometer"
+            style={{ width: `${candidate.sharePct}%`, textAlign: i === 0 ? "left" : i === 1 ? "center" : "right" }}
+          >
+            <span className={i === 0 ? "text-secondary" : i === 1 ? "text-primary" : "text-tertiary"}>
+              {candidate.officialPct.toFixed(2)}%
+            </span>
+          </div>
+        ))}
       </div>
     </section>
   );

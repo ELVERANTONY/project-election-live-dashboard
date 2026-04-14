@@ -7,9 +7,10 @@ const HEADERS = {
   Accept: "application/json, text/plain, */*",
 };
 
-// Nieto = party code 16, Aliaga = party code 35
-const NIETO_CODE = "16";
-const ALIAGA_CODE = "35";
+const KEIKO_CODE   = "8";
+const ALIAGA_CODE  = "35";
+const NIETO_CODE   = "16";
+const SANCHEZ_CODE = "10";
 
 export async function GET() {
   try {
@@ -33,72 +34,99 @@ export async function GET() {
       totRes.json(),
     ]);
 
-    const list = candJson.data as Array<{
+    type ONPECandidate = {
       codigoAgrupacionPolitica: string;
       nombreAgrupacionPolitica: string;
       nombreCandidato: string;
       dniCandidato: string;
       totalVotosValidos: number;
       porcentajeVotosValidos: number;
-    }>;
+    };
 
-    const raw_nieto = list.find((c) => c.codigoAgrupacionPolitica === NIETO_CODE);
-    const raw_aliaga = list.find((c) => c.codigoAgrupacionPolitica === ALIAGA_CODE);
+    const list = candJson.data as ONPECandidate[];
 
-    if (!raw_nieto || !raw_aliaga) throw new Error("Candidates not found in ONPE response");
+    function find(code: string) {
+      const c = list.find((x) => x.codigoAgrupacionPolitica === code);
+      if (!c) throw new Error(`Candidate code ${code} not found`);
+      return c;
+    }
 
-    const nVotos = raw_nieto.totalVotosValidos;
-    const aVotos = raw_aliaga.totalVotosValidos;
-    const total2 = nVotos + aVotos;
+    const rawKeiko   = find(KEIKO_CODE);
+    const rawAliaga  = find(ALIAGA_CODE);
+    const rawNieto   = find(NIETO_CODE);
+    const rawSanchez = find(SANCHEZ_CODE);
 
-    // Percentage as share between the two so bars look good
-    const nPct = +((nVotos / total2) * 100).toFixed(2);
-    const aPct = +((aVotos / total2) * 100).toFixed(2);
+    const aliagaVotes  = rawAliaga.totalVotosValidos;
+    const nietoVotes   = rawNieto.totalVotosValidos;
+    const sanchezVotes = rawSanchez.totalVotosValidos;
+    const threeTotal   = aliagaVotes + nietoVotes + sanchezVotes;
 
-    const gap = aVotos - nVotos; // positive = Aliaga ahead
+    function sharePct(v: number) {
+      return +((v / threeTotal) * 100).toFixed(2);
+    }
+
+    const gap23 = aliagaVotes - nietoVotes;
+    const gap34 = nietoVotes - sanchezVotes;
 
     const totals = totJson.data;
-    const lastSync = new Date(totals.fechaActualizacion).toLocaleTimeString(
-      "es-PE",
-      { timeZone: "America/Lima", hour: "2-digit", minute: "2-digit", second: "2-digit" }
-    ) + " PET";
+    const lastSync =
+      new Date(totals.fechaActualizacion).toLocaleTimeString("es-PE", {
+        timeZone: "America/Lima",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }) + " PET";
 
     return NextResponse.json({
-      candidates: [
-        {
-          id: "nieto",
-          name: "Nieto",
-          party: raw_nieto.nombreAgrupacionPolitica,
-          votes: nVotos,
-          percentage: nPct,
-          role: gap > 0 ? "challenger" : "leader",
-          imageUrl: `/api/candidato-img/${raw_nieto.dniCandidato}`,
-          imageAlt: raw_nieto.nombreCandidato,
-        },
+      keiko: {
+        votes: rawKeiko.totalVotosValidos,
+        officialPct: rawKeiko.porcentajeVotosValidos,
+      },
+      contenders: [
         {
           id: "aliaga",
+          rank: 2,
           name: "López Aliaga",
-          party: raw_aliaga.nombreAgrupacionPolitica,
-          votes: aVotos,
-          percentage: aPct,
-          role: gap > 0 ? "leader" : "challenger",
-          imageUrl: `/api/candidato-img/${raw_aliaga.dniCandidato}`,
-          imageAlt: raw_aliaga.nombreCandidato,
+          party: rawAliaga.nombreAgrupacionPolitica,
+          votes: aliagaVotes,
+          officialPct: rawAliaga.porcentajeVotosValidos,
+          sharePct: sharePct(aliagaVotes),
+          imageUrl: `/api/candidato-img/${rawAliaga.dniCandidato}`,
+          imageAlt: rawAliaga.nombreCandidato,
+        },
+        {
+          id: "nieto",
+          rank: 3,
+          name: "Nieto",
+          party: rawNieto.nombreAgrupacionPolitica,
+          votes: nietoVotes,
+          officialPct: rawNieto.porcentajeVotosValidos,
+          sharePct: sharePct(nietoVotes),
+          imageUrl: `/api/candidato-img/${rawNieto.dniCandidato}`,
+          imageAlt: rawNieto.nombreCandidato,
+        },
+        {
+          id: "sanchez",
+          rank: 4,
+          name: "Sánchez",
+          party: rawSanchez.nombreAgrupacionPolitica,
+          votes: sanchezVotes,
+          officialPct: rawSanchez.porcentajeVotosValidos,
+          sharePct: sharePct(sanchezVotes),
+          imageUrl: `/api/candidato-img/${rawSanchez.dniCandidato}`,
+          imageAlt: rawSanchez.nombreCandidato,
         },
       ],
-      gap: Math.abs(gap),
-      nietoLeading: gap < 0,
+      gap23: Math.abs(gap23),
+      gap34: Math.abs(gap34),
+      nietoLeading: gap23 < 0,
       actasProcessed: totals.actasContabilizadas,
       lastSync,
       turnout: totals.participacionCiudadana,
-      projectedRemaining: totals.totalActas - totals.contabilizadas,
-      districts: [],
+      projectedRemaining: Math.max(0, totals.totalActas - totals.contabilizadas),
     });
   } catch (err) {
     console.error("[electoral/route]", err);
-    return NextResponse.json(
-      { error: String(err) },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: String(err) }, { status: 502 });
   }
 }
