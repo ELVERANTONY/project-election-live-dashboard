@@ -1,9 +1,10 @@
 interface LiveStatusProps {
   lastSync: string;
   actasProcessed: number;
+  isFinal: boolean;
 }
 
-export function LiveStatus({ lastSync, actasProcessed }: LiveStatusProps) {
+export function LiveStatus({ lastSync, actasProcessed, isFinal }: LiveStatusProps) {
   return (
     <div
       className="flex items-center justify-between mb-8 animate-fade-up"
@@ -11,11 +12,13 @@ export function LiveStatus({ lastSync, actasProcessed }: LiveStatusProps) {
     >
       <div className="flex items-center gap-2">
         <div
-          className="w-2 h-2 rounded-full bg-primary animate-pulse"
+          className={`w-2 h-2 rounded-full ${isFinal ? "bg-emerald-400" : "bg-primary animate-pulse"}`}
           data-testid="live-dot"
         />
-        <span className="font-label text-[10px] uppercase tracking-[0.2em] font-extrabold text-primary">
-          En vivo
+        <span
+          className={`font-label text-[10px] uppercase tracking-[0.2em] font-extrabold ${isFinal ? "text-emerald-400" : "text-primary"}`}
+        >
+          {isFinal ? "Resultados Finales" : "En vivo"}
         </span>
       </div>
       <div className="flex items-center gap-4">

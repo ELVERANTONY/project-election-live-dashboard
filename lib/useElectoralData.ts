@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ElectoralData } from "@/types/electoral";
 
 const POLL_MS = 30_000;
@@ -9,6 +9,7 @@ export function useElectoralData() {
   const [data, setData] = useState<ElectoralData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetch_ = useCallback(async () => {
     try {
@@ -20,6 +21,10 @@ export function useElectoralData() {
       const json = await res.json();
       setData(json);
       setError(null);
+      if (json.actasProcessed >= 100 && intervalRef.current !== null) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     } catch (e) {
       setError(String(e));
     } finally {
@@ -29,9 +34,13 @@ export function useElectoralData() {
 
   useEffect(() => {
     fetch_();
-    const id = setInterval(fetch_, POLL_MS);
-    return () => clearInterval(id);
+    intervalRef.current = setInterval(fetch_, POLL_MS);
+    return () => {
+      if (intervalRef.current !== null) clearInterval(intervalRef.current);
+    };
   }, [fetch_]);
 
-  return { data, loading, error };
+  const isFinal = (data?.actasProcessed ?? 0) >= 100;
+
+  return { data, loading, error, isFinal };
 }

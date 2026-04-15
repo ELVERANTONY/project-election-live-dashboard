@@ -11,7 +11,7 @@ import { FlashAlert } from "./FlashAlert";
 import { DepartamentosTable } from "./DepartamentosTable";
 
 export function ElectoralDashboard() {
-  const { data, loading, error } = useElectoralData();
+  const { data, loading, error, isFinal } = useElectoralData();
 
   if (loading && !data) {
     return (
@@ -50,7 +50,7 @@ export function ElectoralDashboard() {
 
   return (
     <>
-      <LiveStatus lastSync={data.lastSync} actasProcessed={data.actasProcessed} />
+      <LiveStatus lastSync={data.lastSync} actasProcessed={data.actasProcessed} isFinal={isFinal} />
 
       <KeikoBanner keiko={data.keiko} />
 
