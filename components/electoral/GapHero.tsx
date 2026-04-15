@@ -5,13 +5,14 @@ import { CandidateId } from "@/types/electoral";
 
 interface GapHeroProps {
   gapToRunoff: number;
+  gap23: number;
   gap34: number;
   secondPlace: CandidateId;
   sanchezLeading: boolean;
   actasProcessed: number;
 }
 
-export function GapHero({ gapToRunoff, gap34, secondPlace, sanchezLeading, actasProcessed }: GapHeroProps) {
+export function GapHero({ gapToRunoff, gap23, gap34, secondPlace, sanchezLeading, actasProcessed }: GapHeroProps) {
   const animatedGap = useCountUp(gapToRunoff);
   const remaining = (100 - actasProcessed).toFixed(1);
 
@@ -67,11 +68,17 @@ export function GapHero({ gapToRunoff, gap34, secondPlace, sanchezLeading, actas
         </div>
 
         <div className="font-body text-sm text-on-surface-variant/70 mt-0.5">
-          {sanchezLeading ? (
+          {secondPlace === "sanchez" ? (
+            <>
+              <span className="font-bold text-secondary">Aliaga</span> supera a{" "}
+              <span className="font-bold text-primary">Nieto</span> por{" "}
+              <span className="font-bold text-secondary">{gap23.toLocaleString("es-PE")}</span> votos.
+            </>
+          ) : sanchezLeading ? (
             <>
               <span className="font-bold text-tertiary">Sánchez</span> supera a{" "}
               <span className="font-bold text-primary">Nieto</span> por{" "}
-              <span className="font-bold text-tertiary">{gap34.toLocaleString("es-PE")}</span> votos.
+              <span className="font-bold text-tertiary">{Math.abs(gap34).toLocaleString("es-PE")}</span> votos.
             </>
           ) : (
             <>

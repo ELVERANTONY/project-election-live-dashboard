@@ -10,7 +10,7 @@ export function FlashAlert({ gapToRunoff, secondPlace }: FlashAlertProps) {
     secondPlace === "nieto"
       ? `Nieto supera a Aliaga por ${gapToRunoff.toLocaleString("es-PE")} votos y pasaría a segunda vuelta.`
       : secondPlace === "sanchez"
-      ? `Le faltan ${gapToRunoff.toLocaleString("es-PE")} votos a Nieto para superar a Sánchez.`
+      ? `Le faltan ${gapToRunoff.toLocaleString("es-PE")} votos a Nieto para superar a Sánchez y pasar a segunda vuelta.`
       : `Le faltan ${gapToRunoff.toLocaleString("es-PE")} votos a Nieto para pasar a la segunda vuelta.`;
 
   return (

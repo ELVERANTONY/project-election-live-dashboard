@@ -56,6 +56,7 @@ export function ElectoralDashboard() {
 
       <GapHero
         gapToRunoff={data.gapToRunoff}
+        gap23={data.gap23}
         gap34={data.gap34}
         secondPlace={data.secondPlace}
         sanchezLeading={data.sanchezLeading}

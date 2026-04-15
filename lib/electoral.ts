@@ -91,8 +91,8 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
   } as Record<CandidateId, 2 | 3 | 4>;
 
   const nietoIdx = sorted.findIndex((x) => x.id === "nieto");
-  const secondPlace: CandidateId = nietoIdx <= 1 ? "nieto" : sorted[1].id;
-  const gapToRunoff = nietoIdx <= 1 ? 0 : sorted[1].votes - nietoVotes;
+  const secondPlace: CandidateId = nietoIdx === 0 ? "nieto" : sorted[0].id;
+  const gapToRunoff = nietoIdx === 0 ? 0 : sorted[0].votes - nietoVotes;
 
   const totals = totJson.data;
   const lastSync =
