@@ -36,9 +36,12 @@ export interface DepartamentosData {
 export interface ElectoralData {
   keiko: KeikoData;
   contenders: [Candidate, Candidate, Candidate]; // [aliaga, nieto, sanchez]
-  gap23: number;  // Aliaga − Nieto (how many Nieto needs)
-  gap34: number;  // Nieto − Sánchez (Nieto's cushion)
+  gap23: number;      // Aliaga − Nieto (raw directional gap)
+  gap34: number;      // Nieto − Sánchez (Nieto's cushion over Sánchez)
+  gapToRunoff: number; // |2nd place votes − Nieto votes| — hero number
+  secondPlace: CandidateId; // who currently holds the runoff spot
   nietoLeading: boolean;
+  sanchezLeading: boolean;
   actasProcessed: number;
   lastSync: string;
   turnout: number;

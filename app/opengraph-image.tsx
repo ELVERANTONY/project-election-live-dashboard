@@ -86,18 +86,27 @@ export default async function Image() {
   const nietoW   = Math.round((nieto.votes   / barTotal) * BAR_W);
   const sanchezW = BAR_W - aliagaW - nietoW;
 
-  const gapColor  = data.nietoLeading ? GREEN : TEXT;
-  const gapPrefix = data.nietoLeading ? "−" : "+";
-  const gapLabel  = data.nietoLeading ? "Nieto supera a Aliaga por" : "Le faltan a Nieto";
-  const gapSub    = data.nietoLeading
-    ? "votos · pasaría a segunda vuelta"
-    : "votos para superar a López Aliaga";
+  const secondPlace = data.secondPlace;
+  const gapColor  = secondPlace === "nieto" ? GREEN : TEXT;
+  const gapPrefix = secondPlace === "nieto" ? "−" : "+";
+  const gapLabel  = secondPlace === "nieto"   ? "Nieto supera a Aliaga por"
+                  : secondPlace === "sanchez" ? "Le faltan a Nieto"
+                  :                             "Le faltan a Nieto";
+  const gapSub    = secondPlace === "nieto"   ? "votos · pasaría a segunda vuelta"
+                  : secondPlace === "sanchez" ? "votos para superar a Sánchez"
+                  :                             "votos para superar a López Aliaga";
 
-  const candidates = [
-    { c: aliaga,  img: aliagaImg,  rankLabel: "2DO LUGAR",            accent: GRAY,  cardBg: CARD,    highlight: false },
-    { c: nieto,   img: nietoImg,   rankLabel: "3ER LUGAR — EN DISPUTA", accent: BLUE,  cardBg: BLUE_DK, highlight: true  },
-    { c: sanchez, img: sanchezImg, rankLabel: "4TO LUGAR",             accent: CORAL, cardBg: CARD,    highlight: false },
-  ];
+  const accentOf = { aliaga: GRAY, nieto: BLUE, sanchez: CORAL } as const;
+  const rankLabelOf = { 2: "2DO LUGAR", 3: "3ER LUGAR", 4: "4TO LUGAR" } as const;
+
+  const candidates = [aliaga, nieto, sanchez].map((c, i) => ({
+    c,
+    img: [aliagaImg, nietoImg, sanchezImg][i],
+    rankLabel: rankLabelOf[c.rank as 2 | 3 | 4],
+    accent: accentOf[c.id as "aliaga" | "nieto" | "sanchez"],
+    cardBg: c.id === "nieto" ? BLUE_DK : CARD,
+    highlight: c.id === "nieto",
+  }));
 
   return new ImageResponse(
     (
@@ -139,11 +148,13 @@ export default async function Image() {
           </div>
           <span style={{ fontSize: 13, color: MUTED, letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>{gapLabel}</span>
           <span style={{ fontSize: 76, fontWeight: 700, color: gapColor, lineHeight: 1 }}>
-            {gapPrefix}{fmt(data.gap23)}
+            {gapPrefix}{fmt(data.gapToRunoff)}
           </span>
           <span style={{ fontSize: 14, color: MUTED, marginTop: 8 }}>{gapSub}</span>
           <span style={{ fontSize: 12, color: CORAL, marginTop: 6 }}>
-            Nieto le lleva +{fmt(data.gap34)} votos a Sánchez
+            {data.sanchezLeading
+              ? `Sánchez supera a Nieto por +${fmt(data.gap34)} votos`
+              : `Nieto le lleva +${fmt(data.gap34)} votos a Sánchez`}
           </span>
         </div>
 

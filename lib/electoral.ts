@@ -1,4 +1,4 @@
-import { ElectoralData } from "@/types/electoral";
+import { CandidateId, ElectoralData } from "@/types/electoral";
 
 const ONPE = "https://resultadoelectoral.onpe.gob.pe/presentacion-backend";
 const HEADERS = {
@@ -67,6 +67,21 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
   const gap23 = aliagaVotes - nietoVotes;
   const gap34 = nietoVotes - sanchezVotes;
 
+  const sorted = [
+    { id: "aliaga"  as CandidateId, votes: aliagaVotes  },
+    { id: "nieto"   as CandidateId, votes: nietoVotes   },
+    { id: "sanchez" as CandidateId, votes: sanchezVotes },
+  ].sort((a, b) => b.votes - a.votes);
+
+  const rankOf: Record<CandidateId, 2 | 3 | 4> = {
+    [sorted[0].id]: 2,
+    [sorted[1].id]: 3,
+    [sorted[2].id]: 4,
+  } as Record<CandidateId, 2 | 3 | 4>;
+
+  const secondPlace = sorted[0].id;
+  const gapToRunoff = Math.abs(sorted[0].votes - nietoVotes);
+
   const totals = totJson.data;
   const lastSync =
     new Date(totals.fechaActualizacion).toLocaleTimeString("es-PE", {
@@ -84,7 +99,7 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
     contenders: [
       {
         id: "aliaga",
-        rank: 2,
+        rank: rankOf["aliaga"],
         name: "López Aliaga",
         party: rawAliaga.nombreAgrupacionPolitica,
         votes: aliagaVotes,
@@ -95,7 +110,7 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
       },
       {
         id: "nieto",
-        rank: 3,
+        rank: rankOf["nieto"],
         name: "Nieto",
         party: rawNieto.nombreAgrupacionPolitica,
         votes: nietoVotes,
@@ -106,7 +121,7 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
       },
       {
         id: "sanchez",
-        rank: 4,
+        rank: rankOf["sanchez"],
         name: "Sánchez",
         party: rawSanchez.nombreAgrupacionPolitica,
         votes: sanchezVotes,
@@ -118,7 +133,10 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
     ],
     gap23: Math.abs(gap23),
     gap34: Math.abs(gap34),
+    gapToRunoff,
+    secondPlace,
     nietoLeading: gap23 < 0,
+    sanchezLeading: gap34 < 0,
     actasProcessed: totals.actasContabilizadas,
     lastSync,
     turnout: totals.participacionCiudadana,

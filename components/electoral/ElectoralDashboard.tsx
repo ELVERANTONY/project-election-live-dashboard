@@ -35,9 +35,10 @@ export function ElectoralDashboard() {
       <KeikoBanner keiko={data.keiko} />
 
       <GapHero
-        gap23={data.gap23}
+        gapToRunoff={data.gapToRunoff}
         gap34={data.gap34}
-        nietoLeading={data.nietoLeading}
+        secondPlace={data.secondPlace}
+        sanchezLeading={data.sanchezLeading}
         actasProcessed={data.actasProcessed}
       />
 
@@ -57,7 +58,7 @@ export function ElectoralDashboard() {
         <DepartamentosTable />
       </section>
 
-      <FlashAlert gap23={data.gap23} nietoLeading={data.nietoLeading} />
+      <FlashAlert gapToRunoff={data.gapToRunoff} secondPlace={data.secondPlace} />
     </>
   );
 }

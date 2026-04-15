@@ -1,12 +1,17 @@
+import { CandidateId } from "@/types/electoral";
+
 interface FlashAlertProps {
-  gap23: number;
-  nietoLeading: boolean;
+  gapToRunoff: number;
+  secondPlace: CandidateId;
 }
 
-export function FlashAlert({ gap23, nietoLeading }: FlashAlertProps) {
-  const message = nietoLeading
-    ? `Nieto supera a Aliaga por ${gap23.toLocaleString("es-PE")} votos y pasaría a segunda vuelta.`
-    : `Le faltan ${gap23.toLocaleString("es-PE")} votos a Nieto para pasar a la segunda vuelta.`;
+export function FlashAlert({ gapToRunoff, secondPlace }: FlashAlertProps) {
+  const message =
+    secondPlace === "nieto"
+      ? `Nieto supera a Aliaga por ${gapToRunoff.toLocaleString("es-PE")} votos y pasaría a segunda vuelta.`
+      : secondPlace === "sanchez"
+      ? `Le faltan ${gapToRunoff.toLocaleString("es-PE")} votos a Nieto para superar a Sánchez.`
+      : `Le faltan ${gapToRunoff.toLocaleString("es-PE")} votos a Nieto para pasar a la segunda vuelta.`;
 
   return (
     <div
