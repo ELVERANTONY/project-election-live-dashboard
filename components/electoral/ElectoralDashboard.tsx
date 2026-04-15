@@ -43,6 +43,8 @@ export function ElectoralDashboard() {
     );
   }
 
+  if (!data) return null;
+
   const [aliaga, nieto, sanchez] = data.contenders;
   const sortedContenders = [aliaga, nieto, sanchez].sort((a, b) => b.votes - a.votes);
 
