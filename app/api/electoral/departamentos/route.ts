@@ -51,6 +51,10 @@ async function fetchDept(ubigeo: string): Promise<ONPEParticipant[]> {
   const url = `${ONPE}/resumen-general/participantes?idEleccion=10&tipoFiltro=ubigeo_nivel_01&idAmbitoGeografico=1&idUbigeoDepartamento=${ubigeo}`;
   const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
   if (!res.ok) throw new Error(`ONPE ${ubigeo} → ${res.status}`);
+  const ct = res.headers.get("content-type") ?? "";
+  if (!ct.includes("application/json")) {
+    throw new Error(`ONPE API devolvió HTML para ubigeo ${ubigeo}`);
+  }
   const json = await res.json();
   return json.data as ONPEParticipant[];
 }
@@ -92,6 +96,6 @@ export async function GET() {
     return NextResponse.json(data);
   } catch (err) {
     console.error("[electoral/departamentos]", err);
-    return NextResponse.json({ error: String(err) }, { status: 502 });
+    return NextResponse.json({ error: String(err) }, { status: 503 });
   }
 }

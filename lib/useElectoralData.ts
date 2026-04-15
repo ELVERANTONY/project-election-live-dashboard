@@ -3,24 +3,25 @@
 import { useState, useEffect, useCallback } from "react";
 import { ElectoralData } from "@/types/electoral";
 
-interface LiveElectoralData extends ElectoralData {
-  error?: string;
-}
-
 const POLL_MS = 30_000;
 
 export function useElectoralData() {
-  const [data, setData] = useState<LiveElectoralData | null>(null);
+  const [data, setData] = useState<ElectoralData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetch_ = useCallback(async () => {
     try {
       const res = await fetch("/api/electoral", { cache: "no-store" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? `HTTP ${res.status}`);
+      }
       const json = await res.json();
       setData(json);
+      setError(null);
     } catch (e) {
-      setData((prev) => (prev ? { ...prev, error: String(e) } : null));
+      setError(String(e));
     } finally {
       setLoading(false);
     }
@@ -32,5 +33,5 @@ export function useElectoralData() {
     return () => clearInterval(id);
   }, [fetch_]);
 
-  return { data, loading };
+  return { data, loading, error };
 }

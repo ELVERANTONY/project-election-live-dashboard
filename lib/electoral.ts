@@ -37,6 +37,14 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
     throw new Error(`ONPE responded ${candRes.status} / ${totRes.status}`);
   }
 
+  const candCT = candRes.headers.get("content-type") ?? "";
+  const totCT = totRes.headers.get("content-type") ?? "";
+  if (!candCT.includes("application/json") || !totCT.includes("application/json")) {
+    throw new Error(
+      `ONPE API devolvió HTML en lugar de JSON (content-type: ${candCT}). El endpoint puede haber cambiado o requiere autenticación.`
+    );
+  }
+
   const [candJson, totJson] = await Promise.all([
     candRes.json(),
     totRes.json(),

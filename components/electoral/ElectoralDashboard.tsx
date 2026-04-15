@@ -11,9 +11,9 @@ import { FlashAlert } from "./FlashAlert";
 import { DepartamentosTable } from "./DepartamentosTable";
 
 export function ElectoralDashboard() {
-  const { data, loading } = useElectoralData();
+  const { data, loading, error } = useElectoralData();
 
-  if (loading || !data) {
+  if (loading && !data) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="flex items-center gap-3 text-on-surface-variant">
@@ -22,6 +22,23 @@ export function ElectoralDashboard() {
             Cargando datos ONPE...
           </span>
         </div>
+      </div>
+    );
+  }
+
+  if (!data && error) {
+    return (
+      <div
+        data-testid="error-state"
+        className="flex flex-col items-center justify-center h-64 gap-4 text-center px-4"
+      >
+        <div className="w-3 h-3 rounded-full bg-red-500" />
+        <p className="font-label text-sm uppercase tracking-widest text-on-surface-variant">
+          Datos ONPE no disponibles
+        </p>
+        <p className="font-body text-xs text-on-surface-variant max-w-sm opacity-60">
+          El servicio de ONPE no responde correctamente. Reintentando cada 30 segundos.
+        </p>
       </div>
     );
   }

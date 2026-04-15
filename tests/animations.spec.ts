@@ -1,9 +1,18 @@
 import { test, expect } from "@playwright/test";
+import { MOCK_ELECTORAL_DATA } from "./fixtures/electoral-mock";
 
 const DASHBOARD_READY = '[data-testid="gap-hero"]';
 
 test.describe("Electoral Dashboard Animations", () => {
   test.beforeEach(async ({ page }) => {
+    await page.route("**/api/electoral", (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(MOCK_ELECTORAL_DATA),
+      });
+    });
+
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
     await page.waitForSelector(DASHBOARD_READY, { timeout: 15_000 });
@@ -97,5 +106,21 @@ test.describe("Electoral Dashboard Animations", () => {
         expect(delays[i]).toBeGreaterThan(delays[i - 1]);
       }
     }
+  });
+
+  test("error state shown when API fails", async ({ page: errorPage }) => {
+    await errorPage.route("**/api/electoral", (route) => {
+      route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "ONPE API unavailable" }),
+      });
+    });
+
+    await errorPage.setViewportSize({ width: 1280, height: 900 });
+    await errorPage.goto("/");
+    await errorPage.waitForSelector('[data-testid="error-state"]', { timeout: 10_000 });
+    const errorEl = errorPage.locator('[data-testid="error-state"]');
+    await expect(errorEl).toBeVisible();
   });
 });

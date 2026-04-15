@@ -7,6 +7,6 @@ export async function GET() {
     return NextResponse.json(data);
   } catch (err) {
     console.error("[electoral/route]", err);
-    return NextResponse.json({ error: String(err) }, { status: 502 });
+    return NextResponse.json({ error: String(err) }, { status: 503 });
   }
 }

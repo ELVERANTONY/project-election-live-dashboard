@@ -1,0 +1,53 @@
+import type { ElectoralData } from "@/types/electoral";
+
+export const MOCK_ELECTORAL_DATA: ElectoralData = {
+  keiko: {
+    votes: 4_200_000,
+    officialPct: 31.5,
+  },
+  contenders: [
+    {
+      id: "nieto",
+      rank: 2,
+      name: "Nieto",
+      party: "Partido Ejemplo A",
+      votes: 2_800_000,
+      officialPct: 21.0,
+      sharePct: 42.5,
+      imageUrl: "/api/candidato-img/00000001",
+      imageAlt: "Salvador del Solar Nieto",
+    },
+    {
+      id: "aliaga",
+      rank: 3,
+      name: "López Aliaga",
+      party: "Partido Ejemplo B",
+      votes: 2_600_000,
+      officialPct: 19.5,
+      sharePct: 39.4,
+      imageUrl: "/api/candidato-img/00000002",
+      imageAlt: "Rafael López Aliaga",
+    },
+    {
+      id: "sanchez",
+      rank: 4,
+      name: "Sánchez",
+      party: "Partido Ejemplo C",
+      votes: 1_200_000,
+      officialPct: 9.0,
+      sharePct: 18.1,
+      imageUrl: "/api/candidato-img/00000003",
+      imageAlt: "Patricia Sánchez",
+    },
+  ],
+  gap23: 200_000,
+  gap34: 1_600_000,
+  gapToRunoff: 200_000,
+  secondPlace: "nieto",
+  nietoLeading: true,
+  sanchezLeading: false,
+  actasProcessed: 75.4,
+  lastSync: "14:30:00 PET",
+  turnout: 82.1,
+  projectedRemaining: 12_500,
+};
