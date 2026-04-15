@@ -3,17 +3,20 @@ import { CandidateId, ElectoralData } from "@/types/electoral";
 const ONPE = "https://resultadoelectoral.onpe.gob.pe/presentacion-backend";
 const HEADERS = {
   Referer: "https://resultadoelectoral.onpe.gob.pe/",
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
   Accept: "application/json, text/plain, */*",
+  "Sec-Fetch-Site": "same-origin",
+  "Sec-Fetch-Mode": "cors",
+  "Sec-Fetch-Dest": "empty",
 };
 
-const KEIKO_CODE   = "8";
-const ALIAGA_CODE  = "35";
-const NIETO_CODE   = "16";
-const SANCHEZ_CODE = "10";
+const KEIKO_CODE   = 8;
+const ALIAGA_CODE  = 35;
+const NIETO_CODE   = 16;
+const SANCHEZ_CODE = 10;
 
 type ONPECandidate = {
-  codigoAgrupacionPolitica: string;
+  codigoAgrupacionPolitica: number;
   nombreAgrupacionPolitica: string;
   nombreCandidato: string;
   dniCandidato: string;
@@ -24,7 +27,7 @@ type ONPECandidate = {
 export async function fetchElectoralData(): Promise<ElectoralData> {
   const [candRes, totRes] = await Promise.all([
     fetch(
-      `${ONPE}/eleccion-presidencial/participantes-ubicacion-geografica-nombre?idEleccion=10&tipoFiltro=eleccion`,
+      `${ONPE}/resumen-general/participantes?idEleccion=10&tipoFiltro=eleccion`,
       { headers: HEADERS, cache: "no-store" }
     ),
     fetch(
