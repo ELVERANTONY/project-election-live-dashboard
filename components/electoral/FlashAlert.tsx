@@ -15,10 +15,10 @@ export function FlashAlert({ gap23, nietoLeading }: FlashAlertProps) {
       data-testid="flash-alert"
     >
       <div className="relative shrink-0">
-        <span className="material-symbols-outlined text-tertiary text-3xl">
+        <span className="material-symbols-outlined text-primary text-3xl">
           flash_on
         </span>
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-tertiary rounded-full animate-ping" />
+        <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-ping" />
       </div>
       <div>
         <h4 className="text-on-surface font-headline font-bold uppercase text-sm tracking-widest">

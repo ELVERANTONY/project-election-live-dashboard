@@ -21,7 +21,7 @@ export function GapHero({ gap23, gap34, nietoLeading, actasProcessed }: GapHeroP
     >
       <div className="flex flex-col items-start gap-2">
         <div className="flex items-center gap-3">
-          <span className="px-4 py-1.5 bg-tertiary-container text-on-tertiary-container font-label text-[10px] uppercase tracking-widest font-bold rounded-full">
+          <span className="px-4 py-1.5 bg-primary-container text-on-primary-container font-label text-[10px] uppercase tracking-widest font-bold rounded-full">
             Actas restantes: {remaining}%
           </span>
           <span className="px-4 py-1.5 border border-outline-variant/30 font-label text-[10px] uppercase tracking-widest font-bold rounded-full text-on-surface-variant">
