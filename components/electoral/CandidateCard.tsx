@@ -11,7 +11,7 @@ const rankConfig = {
     label: "2do lugar",
     accent: "text-secondary",
     border: "border-secondary",
-    bar: "bg-secondary",
+    bar: "bg-gradient-to-r from-secondary-container to-secondary",
   },
   3: {
     label: "3er lugar",
@@ -23,7 +23,7 @@ const rankConfig = {
     label: "4to lugar — en ascenso",
     accent: "text-tertiary",
     border: "border-tertiary",
-    bar: "bg-tertiary/80",
+    bar: "bg-gradient-to-r from-tertiary-container to-tertiary",
   },
 } as const;
 

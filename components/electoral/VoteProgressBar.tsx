@@ -18,9 +18,9 @@ export function VoteProgressBar({ aliaga, nieto, sanchez }: VoteProgressBarProps
   }, []);
 
   const segments = [
-    { candidate: aliaga, color: "bg-secondary",                              label: aliaga.name },
-    { candidate: nieto,  color: "bg-gradient-to-r from-primary-container to-primary", label: nieto.name },
-    { candidate: sanchez, color: "bg-tertiary/80",                           label: sanchez.name },
+    { candidate: aliaga,  color: "bg-gradient-to-r from-secondary-container to-secondary", label: aliaga.name },
+    { candidate: nieto,   color: "bg-gradient-to-r from-primary-container to-primary",   label: nieto.name },
+    { candidate: sanchez, color: "bg-gradient-to-r from-tertiary-container to-tertiary", label: sanchez.name },
   ];
 
   return (
