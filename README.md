@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ¿Nieto pasa a Aliaga?
 
-## Getting Started
+Electoral live-tracker for Peru's 2026 Primera Vuelta. Tracks the three-way race for the second runoff spot behind Keiko Fujimori — polling ONPE every 30 seconds.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router, Turbopack)
+- TypeScript (strict)
+- Tailwind CSS v4
+- Playwright (e2e tests)
+
+## Dev
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev        # http://localhost:3000
+pnpm build
+pnpm lint
+pnpm test       # Playwright e2e (auto-starts dev server if needed)
+pnpm test:ui    # Playwright interactive UI
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run a single test file:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm playwright test tests/animations.spec.ts
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Architecture
 
-## Learn More
+Single-page app — no auth, no backend persistence, no database.
 
-To learn more about Next.js, take a look at the following resources:
+**Data flow:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+useElectoralData (polls every 30s)
+  └─ /api/electoral  (proxies ONPE, normalizes response)
+       └─ resultadoelectoral.onpe.gob.pe
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+/api/candidato-img/[dni]  (proxies candidate photos, avoids CORS)
+```
 
-## Deploy on Vercel
+**Key files:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| File | Purpose |
+|---|---|
+| `types/electoral.ts` | Single source of truth for `ElectoralData`, `Candidate`, `KeikoData` |
+| `lib/electoral.ts` | Fetches + normalizes ONPE data, computes derived fields |
+| `lib/useElectoralData.ts` | Client hook — polls `/api/electoral` every 30 s |
+| `components/electoral/ElectoralDashboard.tsx` | Root display component |
+| `app/api/electoral/route.ts` | ONPE proxy + response normalization |
+| `app/opengraph-image.tsx` | Dynamic OG image (server-rendered) |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Candidate codes** (ONPE `codigoAgrupacionPolitica`): Keiko=`"8"`, Aliaga=`"35"`, Nieto=`"16"`, Sánchez=`"10"`.
+
+## Derived data
+
+`lib/electoral.ts` computes these fields on every fetch:
+
+| Field | Meaning |
+|---|---|
+| `secondPlace` | Which of the three contenders currently holds the runoff spot |
+| `gapToRunoff` | Absolute vote gap between Nieto and whoever is in 2nd place |
+| `gap23` | Raw Aliaga − Nieto gap |
+| `gap34` | Raw Nieto − Sánchez gap |
+| `nietoLeading` | `true` when Nieto > Aliaga |
+| `sanchezLeading` | `true` when Sánchez > Nieto |
+
+Candidate `rank` (2/3/4) is computed dynamically by sorting the three contenders by votes — it is not hardcoded.
+
+## Styling
+
+Tailwind v4 (`@import "tailwindcss"` in `globals.css`). All design tokens are CSS custom properties in `@theme {}`. Never hardcode hex values — use Tailwind utilities (`bg-primary`, `text-on-surface-variant`) or `var(--color-*)`.
+
+Candidate colors are identity-based (not rank-based):
+
+| Candidate | Color token |
+|---|---|
+| Aliaga | `secondary` |
+| Nieto | `primary` |
+| Sánchez | `tertiary` |
+
+Custom utilities: `.glass-panel`, `.odometer`, `.animate-fade-up`, `.animate-slide-in-right`, `.no-scrollbar`.
+
+Three font families: `font-headline` (Space Grotesk), `font-body` (Work Sans), `font-label` (Inter).
