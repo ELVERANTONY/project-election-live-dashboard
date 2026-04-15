@@ -55,7 +55,7 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
 
   const list = candJson.data as ONPECandidate[];
 
-  function find(code: string) {
+  function find(code: number) {
     const c = list.find((x) => x.codigoAgrupacionPolitica === code);
     if (!c) throw new Error(`Candidate code ${code} not found`);
     return c;
