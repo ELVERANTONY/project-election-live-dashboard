@@ -1,36 +1,36 @@
 @import "tailwindcss";
 
 @theme {
-  /* Primary */
-  --color-primary: #b2c5ff;
-  --color-primary-container: #002c74;
-  --color-on-primary: #002c72;
-  --color-on-primary-container: #6a95ff;
-  --color-primary-fixed: #dae2ff;
-  --color-primary-fixed-dim: #b2c5ff;
-  --color-on-primary-fixed: #001847;
-  --color-on-primary-fixed-variant: #0040a1;
-  --color-inverse-primary: #0056d2;
+  /* Primary — Nieto / Partido del Buen Gobierno (naranja) */
+  --color-primary: #ffb86c;
+  --color-primary-container: #6b2e00;
+  --color-on-primary: #3f1a00;
+  --color-on-primary-container: #ff9a3c;
+  --color-primary-fixed: #ffddb3;
+  --color-primary-fixed-dim: #ffb86c;
+  --color-on-primary-fixed: #2a1000;
+  --color-on-primary-fixed-variant: #8a4200;
+  --color-inverse-primary: #c25f00;
 
-  /* Secondary */
-  --color-secondary: #c6c6c7;
-  --color-secondary-container: #454747;
-  --color-on-secondary: #2f3131;
-  --color-on-secondary-container: #b4b5b5;
-  --color-secondary-fixed: #e2e2e2;
-  --color-secondary-fixed-dim: #c6c6c7;
-  --color-on-secondary-fixed: #1a1c1c;
-  --color-on-secondary-fixed-variant: #454747;
+  /* Secondary — Aliaga / Renovación Popular (celeste) */
+  --color-secondary: #87d5f0;
+  --color-secondary-container: #004f6e;
+  --color-on-secondary: #003040;
+  --color-on-secondary-container: #5bc3e8;
+  --color-secondary-fixed: #c8ecf9;
+  --color-secondary-fixed-dim: #87d5f0;
+  --color-on-secondary-fixed: #001e2b;
+  --color-on-secondary-fixed-variant: #004f6e;
 
-  /* Tertiary (alert accent) */
-  --color-tertiary: #ffb4a2;
-  --color-tertiary-container: #631200;
-  --color-on-tertiary: #621100;
-  --color-on-tertiary-container: #ff6944;
-  --color-tertiary-fixed: #ffdad2;
-  --color-tertiary-fixed-dim: #ffb4a2;
-  --color-on-tertiary-fixed: #3c0700;
-  --color-on-tertiary-fixed-variant: #8a1d00;
+  /* Tertiary — Sánchez / Juntos por el Perú (verde) */
+  --color-tertiary: #81c784;
+  --color-tertiary-container: #1b4a1e;
+  --color-on-tertiary: #0a2b0d;
+  --color-on-tertiary-container: #5bab5e;
+  --color-tertiary-fixed: #c8e6c9;
+  --color-tertiary-fixed-dim: #81c784;
+  --color-on-tertiary-fixed: #052408;
+  --color-on-tertiary-fixed-variant: #1b4a1e;
 
   /* Error */
   --color-error: #ffb4ab;
@@ -43,7 +43,7 @@
   --color-surface-dim: #0e141a;
   --color-surface-bright: #343a41;
   --color-surface-variant: #2f353c;
-  --color-surface-tint: #b2c5ff;
+  --color-surface-tint: #ffb86c;
   --color-surface-container-lowest: #090f15;
   --color-surface-container-low: #161c22;
   --color-surface-container: #1a2027;
