@@ -34,7 +34,7 @@ export function CandidateCard({ candidate, index = 0 }: CandidateCardProps) {
             src={candidate.imageUrl}
             alt={candidate.imageAlt}
             fill
-            className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500"
+            className={`object-cover object-top transition-all duration-500 ${candidate.rank === 2 ? "" : "grayscale"}`}
             unoptimized
             sizes="150px"
           />

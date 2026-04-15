@@ -27,6 +27,7 @@ export function ElectoralDashboard() {
   }
 
   const [aliaga, nieto, sanchez] = data.contenders;
+  const sortedContenders = [aliaga, nieto, sanchez].sort((a, b) => b.votes - a.votes);
 
   return (
     <>
@@ -46,9 +47,9 @@ export function ElectoralDashboard() {
 
       <section className="mb-12 lg:mb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <CandidateCard candidate={aliaga} index={0} />
-          <CandidateCard candidate={nieto} index={1} />
-          <CandidateCard candidate={sanchez} index={2} />
+          {sortedContenders.map((c, i) => (
+            <CandidateCard key={c.id} candidate={c} index={i} />
+          ))}
         </div>
       </section>
 
