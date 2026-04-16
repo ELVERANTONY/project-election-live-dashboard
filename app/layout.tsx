@@ -42,6 +42,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { TopBar } from "@/components/layout/TopBar";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -57,7 +59,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-surface text-on-surface antialiased">
+      <body className="min-h-screen flex flex-col bg-surface text-on-surface antialiased pt-16">
+        <TopBar />
         {children}
       </body>
     </html>
