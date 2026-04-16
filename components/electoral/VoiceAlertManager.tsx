@@ -28,8 +28,19 @@ export function VoiceAlertManager({ data }: VoiceAlertManagerProps) {
     const hasActasChanged = prevActasRef.current !== null && prevActasRef.current !== data.actasProcessed;
 
     if (hasGapChanged || hasActasChanged) {
-      const gapFormatted = data.gapToRunoff.toLocaleString("es-PE");
-      const text = `Actualización ONPE: La brecha es ahora de ${gapFormatted} votos de diferencia entre Sánchez y Rafael López Aliaga.`;
+      const gap = data.gapToRunoff.toLocaleString("es-PE");
+      const time = data.lastSync.replace(" PET", ""); // Clean time for speech
+      const pct = data.actasProcessed.toFixed(2);
+      
+      const templates = [
+        `Actualización ONPE: La brecha es ahora de ${gap} votos de diferencia entre Sánchez y Rafael López Aliaga.`,
+        `A las ${time}, la ONPE reporta una distancia de ${gap} votos entre los candidatos Sánchez y Aliaga.`,
+        `Con el ${pct} por ciento de actas procesadas, Aliaga se encuentra a ${gap} votos de alcanzar a Sánchez.`,
+        `Atención: Reporte de último minuto. La diferencia entre Sánchez y Aliaga es ahora de ${gap} votos.`
+      ];
+
+      const randomIndex = Math.floor(Math.random() * templates.length);
+      const text = templates[randomIndex];
       
       speak(text);
     }
