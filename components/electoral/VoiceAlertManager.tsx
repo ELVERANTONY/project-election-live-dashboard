@@ -14,7 +14,7 @@ export function VoiceAlertManager({ data }: VoiceAlertManagerProps) {
   useEffect(() => {
     // We only trigger alerts if sound is enabled in localStorage
     const soundEnabled = localStorage.getItem("voice_alerts_enabled") === "true";
-    
+
     if (!data || !soundEnabled) {
       if (data) {
         prevGapRef.current = data.gapToRunoff;
@@ -31,17 +31,17 @@ export function VoiceAlertManager({ data }: VoiceAlertManagerProps) {
       const gap = data.gapToRunoff.toLocaleString("es-PE");
       const time = data.lastSync.replace(" PET", ""); // Clean time for speech
       const pct = data.actasProcessed.toFixed(2);
-      
+
       const templates = [
         `Actualización ONPE: La brecha es ahora de ${gap} votos de diferencia entre Sánchez y Rafael López Aliaga.`,
-        `A las ${time}, la ONPE reporta una distancia de ${gap} votos entre los candidatos Sánchez y Aliaga.`,
+        `A las ${time}, se reporta una distancia de ${gap} votos entre los candidatos Sánchez y Aliaga.`,
         `Con el ${pct} por ciento de actas procesadas, Aliaga se encuentra a ${gap} votos de alcanzar a Sánchez.`,
         `Atención: Reporte de último minuto. La diferencia entre Sánchez y Aliaga es ahora de ${gap} votos.`
       ];
 
       const randomIndex = Math.floor(Math.random() * templates.length);
       const text = templates[randomIndex];
-      
+
       speak(text);
     }
 
@@ -60,16 +60,16 @@ function speak(text: string) {
   window.speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "es-PE"; 
+  utterance.lang = "es-PE";
   utterance.rate = 1.15; // Increased speed for more agility (broadcast style)
   utterance.pitch = 1.0;
 
   // Find a high-quality Spanish voice
   const voices = window.speechSynthesis.getVoices();
-  const preferredVoice = voices.find(v => 
+  const preferredVoice = voices.find(v =>
     v.lang.startsWith("es") && (v.name.includes("Google") || v.name.includes("Natural"))
   ) || voices.find(v => v.lang.startsWith("es")) || voices[0];
-  
+
   if (preferredVoice) utterance.voice = preferredVoice;
 
   window.speechSynthesis.speak(utterance);
