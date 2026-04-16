@@ -57,10 +57,12 @@ export function ElectoralDashboard() {
       <GapHero
         gapToRunoff={data.gapToRunoff}
         gap23={data.gap23}
+        gap24={data.gap24}
         gap34={data.gap34}
         secondPlace={data.secondPlace}
         sanchezLeading={data.sanchezLeading}
         actasProcessed={data.actasProcessed}
+        isFinal={isFinal}
       />
 
       <VoteProgressBar aliaga={aliaga} nieto={nieto} sanchez={sanchez} />
@@ -79,7 +81,7 @@ export function ElectoralDashboard() {
         <DepartamentosTable />
       </section>
 
-      <FlashAlert gapToRunoff={data.gapToRunoff} secondPlace={data.secondPlace} />
+      <FlashAlert gapToRunoff={data.gapToRunoff} secondPlace={data.secondPlace} isFinal={isFinal} />
     </>
   );
 }

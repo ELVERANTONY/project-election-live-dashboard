@@ -76,6 +76,7 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
   }
 
   const gap23 = aliagaVotes - nietoVotes;
+  const gap24 = aliagaVotes - sanchezVotes;
   const gap34 = nietoVotes - sanchezVotes;
 
   const sorted = [
@@ -144,6 +145,7 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
       },
     ],
     gap23: Math.abs(gap23),
+    gap24: Math.abs(gap24),
     gap34: Math.abs(gap34),
     gapToRunoff,
     secondPlace,

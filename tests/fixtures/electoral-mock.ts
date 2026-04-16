@@ -41,6 +41,7 @@ export const MOCK_ELECTORAL_DATA: ElectoralData = {
     },
   ],
   gap23: 200_000,
+  gap24: 1_400_000,
   gap34: 1_600_000,
   gapToRunoff: 200_000,
   secondPlace: "nieto",
