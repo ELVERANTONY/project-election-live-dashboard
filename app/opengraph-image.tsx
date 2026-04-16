@@ -106,7 +106,7 @@ export default async function Image() {
 
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", padding: "0 48px", height: 52, borderBottom: `1px solid ${BORDER}` }}>
-          <span style={{ fontSize: 24, marginRight: 10 }}>🌞</span>
+          <span style={{ fontSize: 32, fontWeight: 900, color: SECONDARY, marginRight: 14 }}>R</span>
           <span style={{ fontSize: 20, fontWeight: 700, color: TEXT }}>¿Aliaga pasa a Sánchez?</span>
           <div style={{ flex: 1 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

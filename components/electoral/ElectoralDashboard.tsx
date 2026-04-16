@@ -45,7 +45,8 @@ export function ElectoralDashboard() {
   if (!data) return null;
 
   const [aliaga, sanchez] = data.contenders;
-  const sortedContenders = [aliaga, sanchez].sort((a, b) => b.votes - a.votes);
+  // User wants Aliaga always first (left) regardless of rank
+  const contenders = [aliaga, sanchez];
 
   return (
     <>
@@ -67,7 +68,7 @@ export function ElectoralDashboard() {
 
       <section className="mb-12 lg:mb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedContenders.map((c, i) => (
+          {contenders.map((c, i) => (
             <CandidateCard key={c.id} candidate={c} index={i} />
           ))}
         </div>
