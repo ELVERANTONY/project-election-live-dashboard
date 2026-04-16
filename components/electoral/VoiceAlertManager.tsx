@@ -49,14 +49,17 @@ function speak(text: string) {
   window.speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "es-PE"; // Prefer Peruvian Spanish
-  utterance.rate = 1.0;
+  utterance.lang = "es-PE"; 
+  utterance.rate = 1.15; // Increased speed for more agility (broadcast style)
   utterance.pitch = 1.0;
 
-  // Find a Spanish voice if available
+  // Find a high-quality Spanish voice
   const voices = window.speechSynthesis.getVoices();
-  const spanishVoice = voices.find(v => v.lang.startsWith("es")) || voices[0];
-  if (spanishVoice) utterance.voice = spanishVoice;
+  const preferredVoice = voices.find(v => 
+    v.lang.startsWith("es") && (v.name.includes("Google") || v.name.includes("Natural"))
+  ) || voices.find(v => v.lang.startsWith("es")) || voices[0];
+  
+  if (preferredVoice) utterance.voice = preferredVoice;
 
   window.speechSynthesis.speak(utterance);
 }
