@@ -26,19 +26,19 @@ export const metadata: Metadata = {
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : "http://localhost:3000"
   ),
-  title: "¿Nieto pasa a Aliaga? | Primera Vuelta 2026",
-  description: "Cuántos votos le faltan a Jorge Nieto para superar a López Aliaga y llegar al segundo lugar. Actualización en tiempo real — ONPE.",
+  title: "¿Aliaga pasa a Sánchez? | Primera Vuelta 2026",
+  description: "Cuántos votos le faltan a Rafael López Aliaga para superar a Sánchez y consolidar el segundo lugar. Actualización en tiempo real — ONPE.",
   openGraph: {
-    title: "¿Nieto pasa a Aliaga? | Primera Vuelta 2026",
-    description: "Cuántos votos le faltan a Jorge Nieto para superar a López Aliaga y llegar al segundo lugar. Actualización en tiempo real — ONPE.",
-    siteName: "¿Nieto pasa a Aliaga?",
+    title: "¿Aliaga pasa a Sánchez? | Primera Vuelta 2026",
+    description: "Cuántos votos le faltan a Rafael López Aliaga para superar a Sánchez y consolidar el segundo lugar. Actualización en tiempo real — ONPE.",
+    siteName: "¿Aliaga pasa a Sánchez?",
     locale: "es_PE",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "¿Nieto pasa a Aliaga? | Primera Vuelta 2026",
-    description: "Cuántos votos le faltan a Jorge Nieto para superar a López Aliaga y llegar al segundo lugar. Actualización en tiempo real — ONPE.",
+    title: "¿Aliaga pasa a Sánchez? | Primera Vuelta 2026",
+    description: "Cuántos votos le faltan a Rafael López Aliaga para superar a Sánchez y consolidar el segundo lugar. Actualización en tiempo real — ONPE.",
   },
 };
 

@@ -11,7 +11,6 @@ export function useCountUp(target: number, duration = 1400): number {
   const raf = useRef<number>(0);
 
   useEffect(() => {
-    setValue(0);
     const startTime = performance.now();
 
     function tick(now: number) {

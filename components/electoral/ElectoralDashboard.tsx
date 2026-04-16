@@ -7,7 +7,6 @@ import { GapHero } from "./GapHero";
 import { VoteProgressBar } from "./VoteProgressBar";
 import { CandidateCard } from "./CandidateCard";
 import { MetricsRow } from "./MetricsRow";
-import { FlashAlert } from "./FlashAlert";
 import { DepartamentosTable } from "./DepartamentosTable";
 
 export function ElectoralDashboard() {
@@ -45,8 +44,8 @@ export function ElectoralDashboard() {
 
   if (!data) return null;
 
-  const [aliaga, nieto, sanchez] = data.contenders;
-  const sortedContenders = [aliaga, nieto, sanchez].sort((a, b) => b.votes - a.votes);
+  const [aliaga, sanchez] = data.contenders;
+  const sortedContenders = [aliaga, sanchez].sort((a, b) => b.votes - a.votes);
 
   return (
     <>
@@ -56,17 +55,13 @@ export function ElectoralDashboard() {
 
       <GapHero
         gapToRunoff={data.gapToRunoff}
-        gap23={data.gap23}
-        gap24={data.gap24}
-        gap34={data.gap34}
         secondPlace={data.secondPlace}
-        sanchezLeading={data.sanchezLeading}
         aliagaLeadingSanchez={data.aliagaLeadingSanchez}
         actasProcessed={data.actasProcessed}
         isFinal={isFinal}
       />
 
-      <VoteProgressBar aliaga={aliaga} nieto={nieto} sanchez={sanchez} />
+      <VoteProgressBar aliaga={aliaga} sanchez={sanchez} />
 
       <section className="mb-12 lg:mb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -81,8 +76,6 @@ export function ElectoralDashboard() {
       <section className="mb-12 lg:mb-16">
         <DepartamentosTable />
       </section>
-
-      <FlashAlert gapToRunoff={data.gapToRunoff} secondPlace={data.secondPlace} isFinal={isFinal} />
     </>
   );
 }

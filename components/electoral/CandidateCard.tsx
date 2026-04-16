@@ -8,14 +8,12 @@ interface CandidateCardProps {
 
 const idStyle: Record<CandidateId, { accent: string; border: string; bar: string }> = {
   aliaga:  { accent: "text-secondary", border: "border-secondary", bar: "bg-gradient-to-r from-secondary-container to-secondary" },
-  nieto:   { accent: "text-primary",   border: "border-primary",   bar: "bg-gradient-to-r from-primary-container to-primary"   },
   sanchez: { accent: "text-tertiary",  border: "border-tertiary",  bar: "bg-gradient-to-r from-tertiary-container to-tertiary" },
 };
 
-const rankLabel: Record<2 | 3 | 4, string> = {
+const rankLabel: Record<2 | 3, string> = {
   2: "2do lugar",
   3: "3er lugar",
-  4: "4to lugar",
 };
 
 export function CandidateCard({ candidate, index = 0 }: CandidateCardProps) {

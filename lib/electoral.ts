@@ -12,7 +12,6 @@ const HEADERS = {
 
 const KEIKO_CODE   = 8;
 const ALIAGA_CODE  = 35;
-const NIETO_CODE   = 16;
 const SANCHEZ_CODE = 10;
 
 type ONPECandidate = {
@@ -63,37 +62,29 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
 
   const rawKeiko   = find(KEIKO_CODE);
   const rawAliaga  = find(ALIAGA_CODE);
-  const rawNieto   = find(NIETO_CODE);
   const rawSanchez = find(SANCHEZ_CODE);
 
   const aliagaVotes  = rawAliaga.totalVotosValidos;
-  const nietoVotes   = rawNieto.totalVotosValidos;
   const sanchezVotes = rawSanchez.totalVotosValidos;
-  const threeTotal   = aliagaVotes + nietoVotes + sanchezVotes;
+  const twoTotal     = aliagaVotes + sanchezVotes;
 
   function sharePct(v: number) {
-    return +((v / threeTotal) * 100).toFixed(2);
+    return +((v / twoTotal) * 100).toFixed(2);
   }
 
-  const gap23 = aliagaVotes - nietoVotes;
-  const gap24 = aliagaVotes - sanchezVotes;
-  const gap34 = nietoVotes - sanchezVotes;
+  const gapToRunoff = Math.abs(aliagaVotes - sanchezVotes);
 
   const sorted = [
     { id: "aliaga"  as CandidateId, votes: aliagaVotes  },
-    { id: "nieto"   as CandidateId, votes: nietoVotes   },
     { id: "sanchez" as CandidateId, votes: sanchezVotes },
   ].sort((a, b) => b.votes - a.votes);
 
-  const rankOf: Record<CandidateId, 2 | 3 | 4> = {
+  const rankOf: Record<CandidateId, 2 | 3> = {
     [sorted[0].id]: 2,
     [sorted[1].id]: 3,
-    [sorted[2].id]: 4,
-  } as Record<CandidateId, 2 | 3 | 4>;
+  } as Record<CandidateId, 2 | 3>;
 
-  const nietoIdx = sorted.findIndex((x) => x.id === "nieto");
-  const secondPlace: CandidateId = nietoIdx === 0 ? "nieto" : sorted[0].id;
-  const gapToRunoff = nietoIdx === 0 ? 0 : sorted[0].votes - nietoVotes;
+  const secondPlace: CandidateId = sorted[0].id;
 
   const totals = totJson.data;
   const lastSync =
@@ -122,17 +113,6 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
         imageAlt: rawAliaga.nombreCandidato,
       },
       {
-        id: "nieto",
-        rank: rankOf["nieto"],
-        name: "Nieto",
-        party: rawNieto.nombreAgrupacionPolitica,
-        votes: nietoVotes,
-        officialPct: rawNieto.porcentajeVotosValidos,
-        sharePct: sharePct(nietoVotes),
-        imageUrl: `/api/candidato-img/${rawNieto.dniCandidato}`,
-        imageAlt: rawNieto.nombreCandidato,
-      },
-      {
         id: "sanchez",
         rank: rankOf["sanchez"],
         name: "Sánchez",
@@ -144,14 +124,9 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
         imageAlt: rawSanchez.nombreCandidato,
       },
     ],
-    gap23: Math.abs(gap23),
-    gap24: Math.abs(gap24),
-    gap34: Math.abs(gap34),
     gapToRunoff,
     secondPlace,
-    nietoLeading: gap23 < 0,
-    sanchezLeading: gap34 < 0,
-    aliagaLeadingSanchez: gap24 > 0,
+    aliagaLeadingSanchez: aliagaVotes > sanchezVotes,
     actasProcessed: totals.actasContabilizadas,
     lastSync,
     turnout: totals.participacionCiudadana,

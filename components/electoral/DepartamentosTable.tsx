@@ -4,22 +4,21 @@ import { useState } from "react";
 import { useDepartamentosData } from "@/lib/useDepartamentosData";
 import { DepartmentRow } from "@/types/electoral";
 
-type Candidate = "aliaga" | "nieto" | "sanchez";
+type Candidate = "aliaga" | "sanchez";
 type Direction = "desc" | "asc";
 
 const CANDIDATE_CONFIG = {
   aliaga:  { label: "López Aliaga", color: "text-secondary",  border: "border-secondary",  bg: "bg-secondary/10"  },
-  nieto:   { label: "Nieto",        color: "text-primary",    border: "border-primary",    bg: "bg-primary/10"    },
   sanchez: { label: "Sánchez",      color: "text-tertiary",   border: "border-tertiary",   bg: "bg-tertiary/10"   },
 } as const;
 
 function pct(row: DepartmentRow, c: Candidate) {
-  return c === "aliaga" ? row.aliagaPct : c === "nieto" ? row.nietoPct : row.sanchezPct;
+  return c === "aliaga" ? row.aliagaPct : row.sanchezPct;
 }
 
 function Bar({ value, max, candidate }: { value: number; max: number; candidate: Candidate }) {
   const w = max > 0 ? (value / max) * 100 : 0;
-  const colors = { aliaga: "bg-secondary", nieto: "bg-primary", sanchez: "bg-tertiary" };
+  const colors = { aliaga: "bg-secondary", sanchez: "bg-tertiary" };
   return (
     <div className="h-1.5 w-full bg-surface-container-highest rounded-sm overflow-hidden">
       <div
@@ -32,7 +31,7 @@ function Bar({ value, max, candidate }: { value: number; max: number; candidate:
 
 export function DepartamentosTable() {
   const { data, loading, error } = useDepartamentosData();
-  const [sortBy, setSortBy] = useState<Candidate>("nieto");
+  const [sortBy, setSortBy] = useState<Candidate>("aliaga");
   const [direction, setDirection] = useState<Direction>("desc");
 
   if (loading) {
@@ -73,7 +72,7 @@ export function DepartamentosTable() {
 
         {/* Candidate toggle */}
         <div className="flex gap-2 flex-wrap">
-          {(["aliaga", "nieto", "sanchez"] as Candidate[]).map((c) => {
+          {(["aliaga", "sanchez"] as Candidate[]).map((c) => {
             const cfg = CANDIDATE_CONFIG[c];
             const active = sortBy === c;
             return (
@@ -149,7 +148,7 @@ export function DepartamentosTable() {
 
               {/* Other two candidates (compact) */}
               <div className="hidden sm:flex gap-3 shrink-0">
-                {(["aliaga", "nieto", "sanchez"] as Candidate[])
+                {(["aliaga", "sanchez"] as Candidate[])
                   .filter((c) => c !== sortBy)
                   .map((c) => (
                     <span
@@ -167,7 +166,7 @@ export function DepartamentosTable() {
 
       {/* Legend for other columns */}
       <div className="hidden sm:flex justify-end gap-3 mt-3 pt-3 border-t border-outline-variant/20">
-        {(["aliaga", "nieto", "sanchez"] as Candidate[])
+        {(["aliaga", "sanchez"] as Candidate[])
           .filter((c) => c !== sortBy)
           .map((c) => (
             <span key={c} className={`text-xs font-label ${CANDIDATE_CONFIG[c].color} opacity-60`}>

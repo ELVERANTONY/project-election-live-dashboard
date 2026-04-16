@@ -12,7 +12,6 @@ const HEADERS = {
 };
 
 const ALIAGA_CODE  = 35;
-const NIETO_CODE   = 16;
 const SANCHEZ_CODE = 10;
 
 // ONPE ubigeo codes (differ from INEI — Callao is 240000, rest shifted)
@@ -70,16 +69,13 @@ export async function GET() {
         const find = (code: number) =>
           participants.find((p) => p.codigoAgrupacionPolitica === code);
         const aliaga  = find(ALIAGA_CODE);
-        const nieto   = find(NIETO_CODE);
         const sanchez = find(SANCHEZ_CODE);
         const row: DepartmentRow = {
           ubigeo: dept.ubigeo,
           name: dept.name,
           aliagaPct:    aliaga?.porcentajeVotosValidos  ?? 0,
-          nietoPct:     nieto?.porcentajeVotosValidos   ?? 0,
           sanchezPct:   sanchez?.porcentajeVotosValidos ?? 0,
           aliagaVotes:  aliaga?.totalVotosValidos  ?? 0,
-          nietoVotes:   nieto?.totalVotosValidos   ?? 0,
           sanchezVotes: sanchez?.totalVotosValidos ?? 0,
         };
         return row;
