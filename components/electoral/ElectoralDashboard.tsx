@@ -8,6 +8,7 @@ import { VoteProgressBar } from "./VoteProgressBar";
 import { CandidateCard } from "./CandidateCard";
 import { MetricsRow } from "./MetricsRow";
 import { DepartamentosTable } from "./DepartamentosTable";
+import { VoiceAlertManager } from "./VoiceAlertManager";
 
 export function ElectoralDashboard() {
   const { data, loading, error, isFinal } = useElectoralData();
@@ -79,6 +80,8 @@ export function ElectoralDashboard() {
       <section className="mb-12 lg:mb-16">
         <DepartamentosTable />
       </section>
+
+      <VoiceAlertManager data={data} />
     </>
   );
 }

@@ -1,3 +1,5 @@
+import { VoiceAlertsToggle } from "../electoral/VoiceAlertsToggle";
+
 export function TopBar() {
   return (
     <header className="fixed top-0 w-full z-50 bg-surface flex justify-between items-center px-6 h-16 border-b border-outline-variant/20">
@@ -8,9 +10,12 @@ export function TopBar() {
         </h1>
       </div>
 
-      <span className="text-xs text-on-surface/50 font-label uppercase tracking-widest hidden sm:block">
-        Primera Vuelta 2026 · En vivo
-      </span>
+      <div className="flex items-center gap-6">
+        <span className="text-xs text-on-surface/50 font-label uppercase tracking-widest hidden lg:block">
+          Primera Vuelta 2026 · En vivo
+        </span>
+        <VoiceAlertsToggle />
+      </div>
     </header>
   );
 }
