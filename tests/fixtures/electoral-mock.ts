@@ -36,4 +36,6 @@ export const MOCK_ELECTORAL_DATA: ElectoralData = {
   lastSync: "14:30:00 PET",
   turnout: 82.1,
   projectedRemaining: 12_500,
+  aliagaProbability: 15,
+  requiredRemainingShare: 51.2,
 };
