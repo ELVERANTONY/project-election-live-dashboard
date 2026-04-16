@@ -98,7 +98,7 @@ export function GapHero({
             <div className="group relative flex flex-col gap-1 pb-2 border-l border-outline-variant/30 pl-8 mb-2">
               <div className="flex items-center gap-2">
                 <span className="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold">
-                  Probabilidad de Remontada
+                  Chances de Remontada (Victoria de Aliaga)
                 </span>
                 <div className="cursor-help text-on-surface-variant/40 hover:text-primary transition-colors">
                   <span className="material-symbols-outlined text-sm leading-none">info</span>
