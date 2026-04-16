@@ -4,7 +4,7 @@ export function TopBar() {
       <div className="flex items-center gap-3">
         <span className="text-2xl select-none">🌞</span>
         <h1 className="text-xl font-bold tracking-tight text-on-surface font-headline">
-          ¿Nieto pasa a Aliaga?
+          ¿Aliaga pasa a Sánchez?
         </h1>
       </div>
 

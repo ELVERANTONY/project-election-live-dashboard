@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Primary — Nieto / Partido del Buen Gobierno (naranja) */
+  /* Primary — High Alert / Primary (naranja) */
   --color-primary: #ffb86c;
   --color-primary-container: #6b2e00;
   --color-on-primary: #3f1a00;
