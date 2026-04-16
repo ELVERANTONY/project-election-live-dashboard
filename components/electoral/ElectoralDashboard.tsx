@@ -59,6 +59,8 @@ export function ElectoralDashboard() {
         aliagaLeadingSanchez={data.aliagaLeadingSanchez}
         actasProcessed={data.actasProcessed}
         isFinal={isFinal}
+        aliagaProbability={data.aliagaProbability}
+        requiredRemainingShare={data.requiredRemainingShare}
       />
 
       <VoteProgressBar aliaga={aliaga} sanchez={sanchez} />

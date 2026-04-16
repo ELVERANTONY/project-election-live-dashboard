@@ -41,4 +41,6 @@ export interface ElectoralData {
   lastSync: string;
   turnout: number;
   projectedRemaining: number;
+  aliagaProbability: number;      // 0 to 100
+  requiredRemainingShare: number; // % of remaining votes Aliaga needs (among Aliaga+Sanchez)
 }

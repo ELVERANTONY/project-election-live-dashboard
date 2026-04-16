@@ -131,5 +131,56 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
     lastSync,
     turnout: totals.participacionCiudadana,
     projectedRemaining: Math.max(0, totals.totalActas - totals.contabilizadas),
+    ...calculateAliagaMetrics(aliagaVotes, sanchezVotes, totals.contabilizadas, totals.totalActas, rawAliaga.porcentajeVotosValidos, rawSanchez.porcentajeVotosValidos),
+  };
+}
+
+function calculateAliagaMetrics(aliagaVotes: number, sanchezVotes: number, processed: number, total: number, aliagaPct: number, sanchezPct: number) {
+  const processedPct = (processed / total) * 100;
+  const remainingPct = 100 - processedPct;
+  
+  if (remainingPct <= 0) {
+    return {
+      aliagaProbability: aliagaVotes > sanchezVotes ? 100 : 0,
+      requiredRemainingShare: 0,
+    };
+  }
+
+  const gap = sanchezVotes - aliagaVotes;
+  const currentTotalContenders = aliagaVotes + sanchezVotes;
+  
+  // Estimate remaining votes for the Aliaga+Sanchez pool
+  // We assume the total valid pool grows proportionally to acts processed
+  const projectedTotalContenders = currentTotalContenders / (processedPct / 100);
+  const remainingContenders = Math.max(0, projectedTotalContenders - currentTotalContenders);
+  
+  // What percentage of the REMAINING votes for these two does Aliaga need to tie/win?
+  // (Aliaga_rem + Sanchez_rem = remainingContenders)
+  // (Aliaga_rem - Sanchez_rem = gap)
+  // (2 * Aliaga_rem = remainingContenders + gap)
+  const requiredRemainingShare = ((remainingContenders + gap) / (2 * remainingContenders)) * 100;
+  
+  // Probability Model (Logistic/Sigmoid based on distance to required share)
+  // p_curr is Aliaga's current share in the Aliaga+Sanchez pool
+  const pCurr = (aliagaVotes / currentTotalContenders) * 100;
+  const pReq = requiredRemainingShare;
+  
+  let probability: number;
+  if (pReq > 100) {
+    probability = 0; // Mathematically impossible
+  } else if (pReq < 0) {
+    probability = 100; // Already winning
+  } else {
+    // Uncertainty factor that narrows as we approach 100%
+    // A gap of 1% (in pReq vs pCurr) becomes more "certain" as actasProcessed increases
+    const uncertainty = 2.5 * Math.sqrt(remainingPct / 100); 
+    const z = (pCurr - pReq) / (uncertainty || 0.1);
+    // Sigmoid mapping
+    probability = 100 / (1 + Math.exp(-z));
+  }
+
+  return {
+    aliagaProbability: Math.round(probability),
+    requiredRemainingShare: Math.max(0, Math.min(100, Math.round(requiredRemainingShare * 100) / 100)),
   };
 }
