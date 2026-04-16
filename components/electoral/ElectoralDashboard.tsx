@@ -67,7 +67,7 @@ export function ElectoralDashboard() {
       <VoteProgressBar aliaga={aliaga} sanchez={sanchez} />
 
       <section className="mb-12 lg:mb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {contenders.map((c, i) => (
             <CandidateCard key={c.id} candidate={c} index={i} />
           ))}
