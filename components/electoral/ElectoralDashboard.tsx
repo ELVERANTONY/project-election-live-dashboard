@@ -61,6 +61,7 @@ export function ElectoralDashboard() {
         gap34={data.gap34}
         secondPlace={data.secondPlace}
         sanchezLeading={data.sanchezLeading}
+        aliagaLeadingSanchez={data.aliagaLeadingSanchez}
         actasProcessed={data.actasProcessed}
         isFinal={isFinal}
       />

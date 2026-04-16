@@ -41,8 +41,9 @@ export interface ElectoralData {
   gap34: number;      // |Nieto − Sánchez|
   gapToRunoff: number; // |2nd place votes − Nieto votes| — hero number
   secondPlace: CandidateId; // who currently holds the runoff spot
-  nietoLeading: boolean;
-  sanchezLeading: boolean;
+  nietoLeading: boolean;       // Nieto > Aliaga
+  sanchezLeading: boolean;     // Sánchez > Nieto
+  aliagaLeadingSanchez: boolean; // Aliaga > Sánchez
   actasProcessed: number;
   lastSync: string;
   turnout: number;

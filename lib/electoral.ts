@@ -151,6 +151,7 @@ export async function fetchElectoralData(): Promise<ElectoralData> {
     secondPlace,
     nietoLeading: gap23 < 0,
     sanchezLeading: gap34 < 0,
+    aliagaLeadingSanchez: gap24 > 0,
     actasProcessed: totals.actasContabilizadas,
     lastSync,
     turnout: totals.participacionCiudadana,

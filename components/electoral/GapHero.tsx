@@ -10,11 +10,12 @@ interface GapHeroProps {
   gap34: number;
   secondPlace: CandidateId;
   sanchezLeading: boolean;
+  aliagaLeadingSanchez: boolean;
   actasProcessed: number;
   isFinal: boolean;
 }
 
-export function GapHero({ gapToRunoff, gap23, gap24, gap34, secondPlace, sanchezLeading, actasProcessed, isFinal }: GapHeroProps) {
+export function GapHero({ gapToRunoff, gap23, gap24, gap34, secondPlace, sanchezLeading, aliagaLeadingSanchez, actasProcessed, isFinal }: GapHeroProps) {
   const animatedGap = useCountUp(gapToRunoff);
   const remaining = (100 - actasProcessed).toFixed(1);
 
@@ -75,9 +76,19 @@ export function GapHero({ gapToRunoff, gap23, gap24, gap34, secondPlace, sanchez
             </span>
             <span className="text-outline-variant/50">·</span>
             <span>
-              <span className="font-bold text-secondary">Aliaga</span> superó a{" "}
-              <span className="font-bold text-tertiary">Sánchez</span> por{" "}
-              <span className="font-bold">{gap24.toLocaleString("es-PE")}</span> votos
+              {aliagaLeadingSanchez ? (
+                <>
+                  <span className="font-bold text-secondary">Aliaga</span> superó a{" "}
+                  <span className="font-bold text-tertiary">Sánchez</span> por{" "}
+                  <span className="font-bold">{gap24.toLocaleString("es-PE")}</span> votos
+                </>
+              ) : (
+                <>
+                  <span className="font-bold text-tertiary">Sánchez</span> superó a{" "}
+                  <span className="font-bold text-secondary">Aliaga</span> por{" "}
+                  <span className="font-bold">{gap24.toLocaleString("es-PE")}</span> votos
+                </>
+              )}
             </span>
             <span className="text-outline-variant/50">·</span>
             <span>
@@ -180,9 +191,19 @@ export function GapHero({ gapToRunoff, gap23, gap24, gap34, secondPlace, sanchez
         </div>
 
         <div className="font-body text-sm text-on-surface-variant/70 mt-0.5">
-          <span className="font-bold text-secondary">Aliaga</span> le lleva{" "}
-          <span className="font-bold text-secondary">{gap24.toLocaleString("es-PE")}</span>{" "}
-          votos a <span className="font-bold text-tertiary">Sánchez</span>.
+          {aliagaLeadingSanchez ? (
+            <>
+              <span className="font-bold text-secondary">Aliaga</span> le lleva{" "}
+              <span className="font-bold text-secondary">{gap24.toLocaleString("es-PE")}</span>{" "}
+              votos a <span className="font-bold text-tertiary">Sánchez</span>.
+            </>
+          ) : (
+            <>
+              <span className="font-bold text-tertiary">Sánchez</span> le lleva{" "}
+              <span className="font-bold text-tertiary">{gap24.toLocaleString("es-PE")}</span>{" "}
+              votos a <span className="font-bold text-secondary">Aliaga</span>.
+            </>
+          )}
         </div>
       </div>
     </section>

@@ -47,6 +47,7 @@ export const MOCK_ELECTORAL_DATA: ElectoralData = {
   secondPlace: "nieto",
   nietoLeading: true,
   sanchezLeading: false,
+  aliagaLeadingSanchez: false,
   actasProcessed: 75.4,
   lastSync: "14:30:00 PET",
   turnout: 82.1,
